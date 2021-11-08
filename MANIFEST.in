@@ -1,0 +1,12 @@
+include README.md
+include LICENSE
+
+include examples/*.ipynb
+include examples/*.hoc
+include examples/*.mod
+include examples/requirements.txt
+
+include lfpykit/tests/*.npz
+include lfpykit/tests/*.py
+
+recursive-include doc *
