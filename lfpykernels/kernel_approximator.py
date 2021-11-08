@@ -23,8 +23,27 @@ from copy import deepcopy
 from LFPy import TemplateCell, Synapse
 import lfpykit
 import neuron
-import example_network_methods as methods
 from warnings import warn
+
+
+def integrate_beta(tau_1, tau_2):
+    """
+    Return the integral of the beta function from 0 to infty
+
+    Parameters
+    ----------
+    tau_1: float
+        rise time constant
+    tau_2: float
+        decay time constant. tau_2 > tau_1
+
+    Returns
+    -------
+    float
+    """
+    tp = (tau_1 * tau_2) / (tau_2 - tau_1) * np.log(tau_2 / tau_1)
+    u = np.exp(-tp / tau_2) - np.exp(-tp / tau_1)
+    return (tau_2 - tau_1) / u
 
 
 class KernelApprox(object):
@@ -409,8 +428,7 @@ class KernelApprox(object):
             extPar = self.extSynapseParameters
             if extPar['syntype'] == 'Exp2Syn':
                 # compute area under temporal kernel (ms)
-                beta = methods.integrate_beta(extPar['tau1'],
-                                              extPar['tau2'])
+                beta = integrate_beta(extPar['tau1'], extPar['tau2'])
                 for i in range(cell.totnsegs):
                     g_shift = (
                         rho_ext[i]  # (dimensionless)
@@ -463,8 +481,7 @@ class KernelApprox(object):
                 d = self.synapseParameters[iii].copy()
                 if d['syntype'] == 'Exp2Syn':
                     # compute area under temporal kernel (ms)
-                    beta = methods.integrate_beta(d['tau1'],
-                                                  d['tau2'])
+                    beta = integrate_beta(d['tau1'], d['tau2'])
                     for i in range(cell.totnsegs):
                         g_shift = (
                             rho_YX_in[i]  # (dimensionless)
