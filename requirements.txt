@@ -1,0 +1,3 @@
+# essential:
+LFPy>=2.2.2
+git+https://github.com/NeuralEnsemble/parameters@master#egg=parameters
