@@ -8,7 +8,7 @@ dependencies:
   - c-compiler
   - cxx-compiler
   - phtreads-stubs
-  - LFPy
+  - lfpy
   - sphinx_rtd_theme
   - numpydoc
   - m2r2
