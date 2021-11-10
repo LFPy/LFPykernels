@@ -6,7 +6,7 @@ impulse response functions for finite-sized neuronal network models.
 
 ## Build Status
 
-[![DOI](https://zenodo.org/badge/288660131.svg)](https://zenodo.org/badge/latestdoi/288660131)
+[![DOI](https://zenodo.org/badge/XXXXXXXXXX.svg)](https://zenodo.org/badge/latestdoi/XXXXXXXXXX)
 [![Coverage Status](https://coveralls.io/repos/github/LFPy/LFPykernels/badge.svg?branch=main)](https://coveralls.io/github/LFPy/LFPykernels?branch=main)
 [![Documentation Status](https://readthedocs.org/projects/lfpykernels/badge/?version=latest)](https://lfpykernels.readthedocs.io/en/latest/?badge=latest)
 [![Lintly flake8 checks](https://github.com/LFPy/lfpykernels/workflows/Lintly%20flake8%20checks/badge.svg)](https://github.com/LFPy/LFPykernels/actions?query=workflow%3A%22Lintly+flake8+checks%22)
@@ -119,3 +119,41 @@ Once the `conda-forge` channel has been enabled, `lfpykernels` can be installed 
 It is possible to list all of the versions of `lfpykernels` available on your platform with:
 
     $ conda search lfpykernels --channel conda-forge
+
+
+## Docker
+
+We provide a Docker (https://www.docker.com) container recipe file with LFPykernels etc.
+To get started, install Docker and issue either:
+
+    # build Dockerfile from GitHub
+    $ docker build -t lfpykernels https://raw.githubusercontent.com/LFPy/LFPykernels/main/Dockerfile
+    $ docker run -it -p 5000:5000 lfpykernels
+
+
+or
+
+    # build local Dockerfile (obtained by cloning repo, checkout branch etc.)
+    $ docker build -t lfpykernels - < Dockerfile
+    $ docker run -it -p 5000:5000 lfpykernels
+
+
+The ``--mount`` option can be used to mount a folder on the host to a target folder as:
+
+    $ docker run --mount type=bind,source="$(pwd)",target=/opt/data -it -p 5000:5000 lfpykernels
+
+
+which mounts the present working dirctory (``$(pwd)``) to the ``/opt/data`` directory of the container.
+Try mounting the ``LFPykernels`` source directory for example (by setting ``source="<path-to-LFPykernels>"``).
+Various example files can then be found in the folder ``/opt/data/examples/``
+when the container is running.
+
+Jupyter notebook servers running from within the
+container can be accessed after invoking them by issuing:
+
+    $ cd /opt/data/examples/
+    $ jupyter-notebook --ip 0.0.0.0 --port=5000 --no-browser --allow-root
+
+
+and opening the resulting URL in a browser on the host computer, similar to:
+http://127.0.0.1:5000/?token=dcf8f859f859740fc858c568bdd5b015e0cf15bfc2c5b0c1
