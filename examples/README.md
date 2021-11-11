@@ -1,6 +1,7 @@
 # Examples
 
-In order to use these codes, please use the Docker container (`../Dockerfile`) which can be build according to the README (https://github.com/LFPy/LFPykernels#docker)
+In order to use these codes, please use the Docker container (`../Dockerfile`) which can be build according to the README (https://github.com/LFPy/LFPykernels#docker).
+
 
 ## File list
 
