@@ -17,7 +17,6 @@ GNU General Public License for more details.
 """
 import numpy as np
 import scipy.signal as ss
-import matplotlib.pyplot as plt
 
 
 def remove_axis_junk(ax, lines=['right', 'top']):
