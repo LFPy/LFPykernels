@@ -13,8 +13,11 @@ In order to use these codes, please use the Docker container (`../Dockerfile`) w
 - `FIR_filter.nestml`
   NESTML (https://github.com/nest/nestml) file specifying a Finite Impulse Response (FIR) filter node in NEST
 - `example_network_methods.py`
+  Various methods required by network simulations
 - `example_network_parameters.py`
+  Parameters for recurrent multicompartment network model set up using LFPy. Here used to derive parameters for kernel predictions
 - `plotting.py`
+  Some shared plotting methods.
 - `mod/*.mod`
   NMODL language files describing ion-channel and synapse dynamics
 - `LIF_net_forward_model_predictions.ipynb`
