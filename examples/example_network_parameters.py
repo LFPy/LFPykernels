@@ -98,8 +98,8 @@ synapseParameters = [[dict(tau1=0.2, tau2=1.8, e=0.),
 weightFunction = np.random.normal
 # weight_<pre><post> values set by parameters file via main simulation scripts
 # weightArguments = [[dict(loc=weight_EE, scale=weight_EE / 10),
-#                     dict(loc=weight_EI, scale=weight_EI / 10)],
-#                    [dict(loc=weight_IE, scale=weight_IE / 10),
+#                     dict(loc=weight_IE, scale=weight_IE / 10)],
+#                    [dict(loc=weight_EI, scale=weight_EI / 10),
 #                     dict(loc=weight_II, scale=weight_II / 10)]]
 minweight = 0.  # weight values below this value will be redrawn
 
