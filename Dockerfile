@@ -27,7 +27,7 @@ RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && 
     update-alternatives --install /usr/bin/ipython ipython /usr/bin/ipython3 10
 
 
-# Install NEST 3 (master@2d0bad0bf0051fee64afa09487c4eae53c19c1f4)
+# Install NEST 3.1
 RUN git clone --depth 1 -b v3.1 https://github.com/nest/nest-simulator && \
   mkdir nest-build && \
   cd  nest-build && \
@@ -85,7 +85,7 @@ RUN rm -r nrn-bld
 # ---- install LFPykernels -----
 RUN pip install git+https://github.com/LFPy/LFPykernels@main#egg=lfpykernels
 
-# ---- pip install some things
+# ---- pip install some additional things
 RUN pip install pymoo==0.4.2.2
 RUN pip install git+https://github.com/NeuralEnsemble/parameters@master#egg=parameters
 
