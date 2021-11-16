@@ -23,12 +23,22 @@ impulse response functions for finite-sized neuronal network models.
 
 The `LFPykernels` package incorporates calculations of causal spike-signal
 impulse response functions for finite-sized neuronal network models.
+The signals considered are low-frequency extracellular potentials ("local field potential" - LFP)
+or current dipole moments (and by extension EEG and MEG like signals) that are
+thought to mainly stem from synaptic activity.
+The basic idea is that the effect of any spike event in each presynaptic
+population on each signal type can be captured by single linearised multicompartment neuron
+models representative of each population and simultaneously accounting for known distributions of
+cells and synapses in space, as well as distributions of delays.
+
+A scientific publication describing the present methodology in detail is planned.
+For questions, please raise an issue at https://github.com/LFPy/LFPykernels/issues.  
 
 
 ## Usage
 
 Example prediction of kernel function ``H`` mapping spike events of a
-presynaptic inhibitory population ``X=='I'`` to extracellular potential contributions by a 
+presynaptic inhibitory population ``X=='I'`` to extracellular potential contributions by a
 postsynaptic excitatory population ``Y=='E'`` (see ``examples/README_example.ipynb``):
 
     import matplotlib.pyplot as plt
