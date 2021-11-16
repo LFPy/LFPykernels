@@ -60,9 +60,6 @@ Notes on physical units used in `LFPykernels`:
 - Spike rates are assumed to be in units of (# spikes / ∆t)
 
 
-## Dimensionality
-
-
 ## Documentation
 
 The online Documentation of `LFPykernels` can be found here:
@@ -72,10 +69,10 @@ https://lfpykernels.readthedocs.io/en/latest
 ## Dependencies
 
 `LFPykernels` is implemented in Python and is written (and continuously tested) for `Python >= 3.7`.
-The main `LFPykernels` module depends on ``LFPy``.
+The main `LFPykernels` module depends on ``LFPy`` (https://github.com/LFPy/LFPy, https://LFPy.readthedocs.io).
 
 Running all unit tests and example files may in addition require `py.test`, `matplotlib`,
-`LFPy` (https://github.com/LFPy/LFPy, https://LFPy.readthedocs.io).
+`LFPy`.
 
 
 ## Installation
