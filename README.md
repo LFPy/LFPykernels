@@ -1,6 +1,6 @@
 # LFPykernels
 
-The `LFPykernels` package incorporates calculations of causal spike-signal
+The ``LFPykernels`` package incorporates forward-model based calculations of causal spike-signal
 impulse response functions for finite-sized neuronal network models.
 
 
@@ -21,25 +21,38 @@ impulse response functions for finite-sized neuronal network models.
 
 ## Features
 
-The `LFPykernels` package incorporates calculations of causal spike-signal
+The ``LFPykernels`` package incorporates forward-model based calculations of causal spike-signal
 impulse response functions for finite-sized neuronal network models.
 The signals considered are low-frequency extracellular potentials ("local field potential" - LFP)
 or current dipole moments (and by extension EEG and MEG like signals) that are
-thought to mainly stem from synaptic activity.
+thought to mainly stem from synaptic currents and associated return currents.
 The basic idea is that the effect of any spike event in each presynaptic
 population on each signal type can be captured by single linearised multicompartment neuron
 models representative of each population and simultaneously accounting for known distributions of
-cells and synapses in space, as well as distributions of delays.
+cells and synapses in space, distributions of delays, synaptic currents and associated return currents.
 
 A scientific publication describing the present methodology in detail is planned.
-For questions, please raise an issue at https://github.com/LFPy/LFPykernels/issues.  
+The intended use for filter kernels predicted using ``LFPykernels`` is forward-model based signal predictions
+from neuronal network simulation frameworks using simplified neuron representations like leaky integrate-and-fire
+point neurons or rate-based neurons.
+Let ``nu_X(t)`` describe presynaptic population spike rates in units of spikes/dt
+and ``H_YX(r, tau)`` predicted spike-signal kernels for the connections between presynaptic populations ``X`` and
+postsynaptic populations ``Y`` the full signal may then be computed via the sum over linear convolutions
+```
+V(r, t) = sum_X sum_Y conv(nu_X, H_YX)(r, t)
+```
+
+A more elaborate example combining kernel predictions with a spiking point-neuron network simulation is provided in the example notebook
+https://github.com/LFPy/LFPykernels/blob/main/examples/LIF_net_forward_model_predictions.ipynb
+
+For questions, please raise an issue at https://github.com/LFPy/LFPykernels/issues.
 
 
 ## Usage
 
 Example prediction of kernel function ``H`` mapping spike events of a
 presynaptic inhibitory population ``X=='I'`` to extracellular potential contributions by a
-postsynaptic excitatory population ``Y=='E'`` (see ``examples/README_example.ipynb``):
+postsynaptic excitatory population ``Y=='E'`` (see https://github.com/LFPy/LFPykernels/blob/main/examples/README_example.ipynb):
 
     import matplotlib.pyplot as plt
     import scipy.stats as st
