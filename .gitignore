@@ -132,3 +132,8 @@ dmypy.json
 
 # macos stuff
 .DS_Store
+
+# NMODL stuff
+examples/mod/x86_64
+examples/mod/arm64
+examples/mod/aarch64

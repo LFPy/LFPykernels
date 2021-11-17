@@ -16,7 +16,7 @@ jobs:
     strategy:
         matrix:
             os: [ubuntu-latest]
-            python-version: [3.6, 3.7, 3.8, 3.9]
+            python-version: [3.7, 3.8, 3.9]
 
     steps:
     - uses: actions/checkout@v2
@@ -26,10 +26,17 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
+        if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get update
+            sudo apt install build-essential libopenmpi-dev openmpi-bin libgcc1 libreadline8
+        else
+            echo "$RUNNER_OS not supported"
+            exit 1
+        fi
         python -m pip install --upgrade pip
         pip install flake8 pytest wheel
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        if [[ "${{ matrix.python-version }}" < "3.9" ]]; then pip install neuron; fi
+        # if [[ "${{ matrix.python-version }}" < "3.9" ]]; then pip install neuron; fi
         pip install .
     - name: Lint with flake8
       run: |
