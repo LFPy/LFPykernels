@@ -76,12 +76,13 @@ class KernelApprox(object):
         keys: ``radius``, ``loc``, ``scale`` with float values representing radius
         in xy-plane and mean and standard deviation of cell positions along the
         z-axis
-    delayFunctions: list of callable
-        list of ``scipy.stats.rv_continuous`` like callable with pdf method
-        for each presynaptic popualation ``X``.
-        Default is ``[scipy.stats.truncnorm]``.
+    delayFunction: callable
+        ``scipy.stats.rv_continuous`` like callable with pdf method
+        for delays between presynaptic populations ``X`` and postsynaptic
+        population ``Y``.
+        Default is ``scipy.stats.truncnorm``.
     delayParameters: list of dict
-        kwargs for each callable element in ``delayFunctions``
+        kwargs for callable ``delayFunction``
     synapseParameters: list of dict
         kwargs for ``LFPy.Synapse``, assuming conductance based synapse which
         will be linearized to current based synapse for connections between
@@ -112,7 +113,7 @@ class KernelApprox(object):
             rotationParameters=dict(x=0., y=0.),
             multapseFunction=st.truncnorm,
             multapseParameters=[dict(loc=2, scale=5)],
-            delayFunctions=[st.truncnorm],
+            delayFunction=st.truncnorm,
             delayParameters=[{'a': -4.0, 'b': np.inf, 'loc': 1.5, 'scale': 0.3}],
             synapseParameters=[dict(weight=0.001, syntype='Exp2Syn',
                                     tau1=0.2, tau2=1.8, e=0.)],
@@ -139,7 +140,7 @@ class KernelApprox(object):
         self.cellParameters = cellParameters
         self.populationParameters = populationParameters
         self.rotationParameters = rotationParameters
-        self.delayFunctions = delayFunctions
+        self.delayFunction = delayFunction
         self.delayParameters = delayParameters
         self.synapseParameters = synapseParameters
         self.synapsePositionArguments = synapsePositionArguments
@@ -169,7 +170,7 @@ class KernelApprox(object):
         '''
         t = np.linspace(-tau, tau, int(2 * tau // dt + 1))
         [i] = np.where(np.array(self.X) == X)[0]
-        h_delay = self.delayFunctions[i](**self.delayParameters[i]).pdf(t)
+        h_delay = self.delayFunction(**self.delayParameters[i]).pdf(t)
         return h_delay / h_delay.sum()
 
     def draw_rand_pos(self, SIZE, radius, loc, scale, cap=None):
