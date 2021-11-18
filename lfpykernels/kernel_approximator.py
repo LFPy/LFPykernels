@@ -76,11 +76,12 @@ class KernelApprox(object):
         keys: ``radius``, ``loc``, ``scale`` with float values representing radius
         in xy-plane and mean and standard deviation of cell positions along the
         z-axis
-    delayFunction: callable
-        ``scipy.stats.rv_continuous`` like callable with pdf method.
-        Default is ``scipy.stats.truncnorm``.
-    delayParameters: dict
-        kwargs for ``delayFunction``
+    delayFunctions: list of callable
+        list of ``scipy.stats.rv_continuous`` like callable with pdf method
+        for each presynaptic popualation ``X``.
+        Default is ``[scipy.stats.truncnorm]``.
+    delayParameters: list of dict
+        kwargs for each callable element in ``delayFunctions``
     synapseParameters: list of dict
         kwargs for ``LFPy.Synapse``, assuming conductance based synapse which
         will be linearized to current based synapse for connections between
@@ -111,8 +112,8 @@ class KernelApprox(object):
             rotationParameters=dict(x=0., y=0.),
             multapseFunction=st.truncnorm,
             multapseParameters=[dict(loc=2, scale=5)],
-            delayFunction=st.truncnorm,
-            delayParameters={'a': -4.0, 'b': np.inf, 'loc': 1.5, 'scale': 0.3},
+            delayFunctions=[st.truncnorm],
+            delayParameters=[{'a': -4.0, 'b': np.inf, 'loc': 1.5, 'scale': 0.3}],
             synapseParameters=[dict(weight=0.001, syntype='Exp2Syn',
                                     tau1=0.2, tau2=1.8, e=0.)],
             synapsePositionArguments=[dict(section=['soma', 'apic'],
@@ -138,7 +139,7 @@ class KernelApprox(object):
         self.cellParameters = cellParameters
         self.populationParameters = populationParameters
         self.rotationParameters = rotationParameters
-        self.delayFunction = delayFunction
+        self.delayFunctions = delayFunctions
         self.delayParameters = delayParameters
         self.synapseParameters = synapseParameters
         self.synapsePositionArguments = synapsePositionArguments
@@ -147,14 +148,18 @@ class KernelApprox(object):
         self.n_ext = n_ext
         self.nu_X = nu_X
 
-    def get_delay(self, dt, tau):
+    def get_delay(self, X, dt, tau):
         '''Get normalized transfer function for conduction delay distribution
         for connections between population X and Y
 
         Parameters
         ----------
+        X: str
+            presynaptic population name
         dt: float
+            time resolution
         tau: float
+            time lag
 
         Returns
         -------
@@ -163,7 +168,8 @@ class KernelApprox(object):
             distribution
         '''
         t = np.linspace(-tau, tau, int(2 * tau // dt + 1))
-        h_delay = self.delayFunction(**self.delayParameters).pdf(t)
+        [i] = np.where(np.array(self.X) == X)[0]
+        h_delay = self.delayFunctions[i](**self.delayParameters[i]).pdf(t)
         return h_delay / h_delay.sum()
 
     def draw_rand_pos(self, SIZE, radius, loc, scale, cap=None):
@@ -371,7 +377,7 @@ class KernelApprox(object):
             shape (n_channels, 2 * tau // dt + 1) linear response kernel
         '''
         # get conduction delay transfer function for connections from X to Y
-        h_delta = self.get_delay(dt, tau)
+        h_delta = self.get_delay(X, dt, tau)
 
         # assess index of presynaptic population in X
         (X_i, ) = np.where(np.array(self.X) == X)[0]
