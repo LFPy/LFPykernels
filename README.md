@@ -139,7 +139,8 @@ postsynaptic excitatory population ``Y=='E'`` (see https://github.com/LFPy/LFPyk
         # function and parameters for delay distribution from connections between a
         # population in X onto population Y:
         delayFunction=st.truncnorm,
-        delayParameters={'a': -1.5, 'b': np.inf, 'loc': 1.2, 'scale': 0.6},
+        delayParameters=[{'a': -2.2, 'b': np.inf, 'loc': 1.3, 'scale': 0.5},
+                         {'a': -1.5, 'b': np.inf, 'loc': 1.2, 'scale': 0.6}],
         # parameters for synapses from connections by populations X onto Y
         synapseParameters=[
             {'weight': 0.00012, 'syntype': 'Exp2Syn', 'tau1': 0.2, 'tau2': 1.8, 'e': 0.0},
