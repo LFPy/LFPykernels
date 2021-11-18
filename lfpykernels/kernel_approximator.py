@@ -73,9 +73,9 @@ class KernelApprox(object):
         kwargs for ``LFPy.TemplateCell`` class for cell representative of the
         entire postsynaptic population
     populationParameters: dict
-        keys: ``radius``, ``loc``, ``scale`` with float values representing radius
-        in xy-plane and mean and standard deviation of cell positions along the
-        z-axis
+        keys: ``radius``, ``loc``, ``scale`` with float values representing
+        radius in xy-plane and mean and standard deviation of cell positions
+        along the z-axis
     delayFunction: callable
         ``scipy.stats.rv_continuous`` like callable with pdf method
         for delays between presynaptic populations ``X`` and postsynaptic
@@ -114,7 +114,7 @@ class KernelApprox(object):
             multapseFunction=st.truncnorm,
             multapseParameters=[dict(loc=2, scale=5)],
             delayFunction=st.truncnorm,
-            delayParameters=[{'a': -4.0, 'b': np.inf, 'loc': 1.5, 'scale': 0.3}],
+            delayParameters=[dict(a=-4.0, b=np.inf, loc=1.5, scale=0.3)],
             synapseParameters=[dict(weight=0.001, syntype='Exp2Syn',
                                     tau1=0.2, tau2=1.8, e=0.)],
             synapsePositionArguments=[dict(section=['soma', 'apic'],
