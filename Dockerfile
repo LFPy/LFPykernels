@@ -49,10 +49,7 @@ RUN rm -r nest-simulator
 RUN rm -r nest-build
 
 # Add NEST binary folder to PATH
-ENV PATH /opt/nest/bin:${PATH}
-
-# Add pyNEST to PYTHONPATH
-ENV PYTHONPATH /opt/nest/lib/python3.8/site-packages:${PYTHONPATH}
+RUN echo "source /opt/nest/bin/nest_vars.sh" >> root/.bashrc
 
 
 # ---- install NESTML -----
