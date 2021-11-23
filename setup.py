@@ -33,7 +33,8 @@ if not any(arg in sys.argv for arg in ['sdist', 'upload']):
         os.chdir(os.path.join('..', '..'))
     else:
         print("nrnivmodl/mknrndll script not found in PATH, thus NMODL " +
-              "files could not be compiled. LFPy.test() functions will fail")
+              "files could not be compiled. lfpykernels test functions" +
+              "will fail")
 
 with open('README.md', 'r') as fh:
     long_description = fh.read()
