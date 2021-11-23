@@ -44,9 +44,10 @@ setuptools.setup(
     install_requires=['LFPy>=2.2.2'],
     package_data={
         'lfpykernels': [
-            os.path.join(
-                    'tests',
-                    '*.py')]},
+            os.path.join('tests', '*.py'),
+            os.path.join('tests', '*.hoc'),
+            os.path.join('tests', '*.mod'),
+            ]},
     include_package_data=True,
     extras_require={
         'tests': [

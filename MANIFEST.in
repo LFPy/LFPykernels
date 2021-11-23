@@ -3,10 +3,12 @@ include LICENSE
 
 include examples/*.ipynb
 include examples/*.hoc
-include examples/*.mod
-include examples/requirements.txt
+include examples/mod/*.mod
+include examples/*.nestml
+include examples/README.md
 
-include lfpykit/tests/*.npz
-include lfpykit/tests/*.py
+include lfpykernels/tests/*.hoc
+include lfpykernels/tests/*.mod
+include lfpykernels/tests/*.py
 
 recursive-include doc *

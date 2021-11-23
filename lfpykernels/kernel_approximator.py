@@ -112,7 +112,7 @@ class KernelApprox(object):
             populationParameters=dict(radius=100, loc=0, scale=50),
             rotationParameters=dict(x=0., y=0.),
             multapseFunction=st.truncnorm,
-            multapseParameters=[dict(loc=2, scale=5)],
+            multapseParameters=[dict(a=-0.2, b=1.6, loc=2, scale=5)],
             delayFunction=st.truncnorm,
             delayParameters=[dict(a=-4.0, b=np.inf, loc=1.5, scale=0.3)],
             synapseParameters=[dict(weight=0.001, syntype='Exp2Syn',
@@ -237,8 +237,8 @@ class KernelApprox(object):
         Return probability
         normalized to the membrane area of each segment multiplied by
         the value of the probability density function of ``fun``, a function
-        in the scipy.stats module with corresponding function arguments
-        in "funargs" on the interval [z_min, z_max]
+        in the ``scipy.stats`` module with corresponding function arguments
+        in ``funargs`` on the interval [z_min, z_max]
 
         Parameters
         ----------
