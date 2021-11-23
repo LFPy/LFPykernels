@@ -1,11 +1,14 @@
 include README.md
 include LICENSE
+include CITATION.cff
+include requirements.txt
 
 include examples/*.ipynb
 include examples/*.hoc
 include examples/mod/*.mod
 include examples/*.nestml
 include examples/README.md
+include examples/*.py
 
 include lfpykernels/tests/*.hoc
 include lfpykernels/tests/*.mod
