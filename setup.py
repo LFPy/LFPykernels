@@ -5,12 +5,36 @@
 '''
 
 import os
+import sys
+import shutil
+from distutils.spawn import spawn
 import setuptools
 
 d = {}
 exec(open(os.path.join('lfpykernels', 'version.py')).read(), None, d)
 version = d['version']
 
+# try and locate the nrnivmodl or mknrndll script of NEURON in PATH so that the
+# NEURON NMODL files LFPy/test/*.mod can be compiled in place and be copied
+# as part of the package_data, allowing unit tests to run
+if not any(arg in sys.argv for arg in ['sdist', 'upload']):
+    if shutil.which('nrnivmodl') is not None:
+        os.chdir(os.path.join('lfpykernels', 'tests'))
+        for path in ['x86_64', 'arm64', 'aarch64']:
+            if os.path.isdir(path):
+                shutil.rmtree(path)
+        spawn([shutil.which('nrnivmodl')])
+        os.chdir(os.path.join('..', '..'))
+    elif shutil.which('mknrndll') is not None:
+        os.chdir(os.path.join('lfpykernels', 'tests'))
+        if os.path.isfile("nrnmech.dll"):
+            os.remove("nrnmech.dll")
+        spawn([shutil.which('mknrndll')])
+        os.chdir(os.path.join('..', '..'))
+    else:
+        print("nrnivmodl/mknrndll script not found in PATH, thus NMODL " +
+              "files could not be compiled. lfpykernels test functions" +
+              "will fail")
 
 with open('README.md', 'r') as fh:
     long_description = fh.read()
@@ -44,9 +68,10 @@ setuptools.setup(
     install_requires=['LFPy>=2.2.2'],
     package_data={
         'lfpykernels': [
-            os.path.join(
-                    'tests',
-                    '*.py')]},
+            os.path.join('tests', '*.py'),
+            os.path.join('tests', '*.hoc'),
+            os.path.join('tests', '*.mod'),
+            ]},
     include_package_data=True,
     extras_require={
         'tests': [
