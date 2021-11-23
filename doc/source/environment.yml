@@ -3,11 +3,12 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.8
+  - python=3.9
   - numpy
   - c-compiler
   - cxx-compiler
-  - gcc_linux-64
+  - pthreads-stubs
+  - mpi4py
   - lfpy
   - sphinx_rtd_theme
   - numpydoc
