@@ -127,7 +127,7 @@ class TestSuite(unittest.TestCase):
         dt = 2**-4
         tau = 100
 
-        cellParameters=dict(
+        cellParameters = dict(
             templatefile=os.path.join(lfpykernels.__path__[0], 'tests',
                                       'BallAndSticksTemplate.hoc'),
             templatename='BallAndSticksTemplate',
@@ -139,7 +139,7 @@ class TestSuite(unittest.TestCase):
                                     'BallAndSticks_E.hoc')
         )
 
-        populationParameters=dict(radius=100, loc=0, scale=50)
+        populationParameters = dict(radius=100, loc=0, scale=50)
 
         params = dict(
             X=['E'],
@@ -176,7 +176,7 @@ class TestSuite(unittest.TestCase):
 
         # check delay distribution
         delay = kernel.get_delay('E', dt=dt, tau=tau)
-        assert delay.shape == (int(tau // dt)  * 2 + 1, )
+        assert delay.shape == (int(tau // dt) * 2 + 1, )
         assert delay.min() == 0
         assert np.all(delay[:int(tau // dt) + 1] == 0)
         np.testing.assert_almost_equal(delay.sum(), 1)
@@ -202,7 +202,12 @@ class TestSuite(unittest.TestCase):
         H_EE = kernel.get_kernel(probes=(gauss, cdm), Vrest=Vrest, X='E',
                                  dt=dt, tau=tau, t_X=200, g_eff=True)
 
-        assert H_EE['GaussCylinderPotential'].shape == (z.size, int(2 * tau // dt) + 1)
-        assert np.all(H_EE['GaussCylinderPotential'][:, :int(tau // dt) + 1] == 0)
-        assert H_EE['KernelApproxCurrentDipoleMoment'].shape == (3, int(2 * tau // dt) + 1)
-        assert np.all(H_EE['KernelApproxCurrentDipoleMoment'][:, :int(tau // dt) + 1] == 0)
+        assert (H_EE['GaussCylinderPotential'].shape
+                == (z.size, int(2 * tau // dt) + 1))
+        assert np.all(H_EE['GaussCylinderPotential'][:, :int(tau // dt) + 1]
+                      == 0)
+        assert (H_EE['KernelApproxCurrentDipoleMoment'].shape
+                == (3, int(2 * tau // dt) + 1))
+        assert np.all(
+            H_EE['KernelApproxCurrentDipoleMoment'][:, :int(tau // dt) + 1]
+            == 0)
