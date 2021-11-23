@@ -23,7 +23,7 @@ impulse response functions for finite-sized neuronal network models.
 
 If you use this software, please cite it as (change version accordingly):
 
-    Hagen, Espen. (2021). LFPykernels (version/SHA/tag). Zenodo. https://doi.org/10.5281/zenodo.5720619
+    Hagen, Espen. (2021). LFPykernels (version/git-SHA/git-tag). Zenodo. https://doi.org/10.5281/zenodo.5720619
 
 
 BibTex format:
@@ -35,9 +35,9 @@ BibTex format:
       year         = 2021,
       note         = {If you use this software, please cite it as below.},
       publisher    = {Zenodo},
-      version      = {v0.1.rc1},
+      version      = {version/git-SHA/git-tag},
       doi          = {10.5281/zenodo.5720619},
-      url          = {https://doi.org/10.5281/zenodo.5720620}
+      url          = {https://doi.org/10.5281/zenodo.5720619}
     }
 
 
