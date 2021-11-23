@@ -7,7 +7,8 @@ dependencies:
   - numpy
   - c-compiler
   - cxx-compiler
-  - lfpy
+  - pthread-stubs
+  - mpi4py
   - sphinx_rtd_theme
   - numpydoc
   - m2r2
