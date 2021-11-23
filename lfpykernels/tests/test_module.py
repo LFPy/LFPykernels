@@ -16,6 +16,7 @@ GNU General Public License for more details.
 
 import os
 import sys
+import posixpath
 import unittest
 import numpy as np
 import lfpykit
