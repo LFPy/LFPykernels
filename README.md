@@ -19,6 +19,28 @@ impulse response functions for finite-sized neuronal network models.
 [![License](http://img.shields.io/:license-GPLv3+-green.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
 
 
+## Citation
+
+If you use this software, please cite it as (change version accordingly):
+
+    Hagen, Espen. (2021). LFPykernels (version/git-SHA/git-tag). Zenodo. https://doi.org/10.5281/zenodo.5720619
+
+
+BibTex format:
+
+    @software{hagen_espen_2021_5720619,
+      author       = {Hagen, Espen},
+      title        = {LFPykernels},
+      month        = nov,
+      year         = 2021,
+      note         = {If you use this software, please cite it as below.},
+      publisher    = {Zenodo},
+      version      = {version/git-SHA/git-tag},
+      doi          = {10.5281/zenodo.5720619},
+      url          = {https://doi.org/10.5281/zenodo.5720619}
+    }
+
+
 ## Features
 
 The ``LFPykernels`` package incorporates forward-model based calculations of causal spike-signal
