@@ -7,7 +7,7 @@ dependencies:
   - numpy
   - c-compiler
   - cxx-compiler
-  - pthread-stubs
+  - conda install gcc_linux-64
   - lfpy
   - sphinx_rtd_theme
   - numpydoc
