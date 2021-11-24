@@ -52,6 +52,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     classifiers=[
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
@@ -64,7 +65,7 @@ setuptools.setup(
         'Intended Audience :: Science/Research',
         'Development Status :: 4 - Beta',
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.6',
     install_requires=['LFPy>=2.2.2'],
     package_data={
         'lfpykernels': [
