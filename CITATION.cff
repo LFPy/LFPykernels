@@ -1,10 +1,8 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-type: software
 authors:
-  - given-names: "Espen"
-    family-names: "Hagen"
-    affiliation: "Norwegian University of Life Sciences"
+  - family-names: "Hagen"
+    given-names: "Espen"
     orcid: "https://orcid.org/0000-0002-1321-5970"
 title: "LFPykernels"
 version: 0.1.rc4
