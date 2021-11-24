@@ -6,7 +6,7 @@ authors:
     family-names: Hagen
     affiliation: Norwegian University of Life Sciences
     orcid: 'https://orcid.org/0000-0002-1321-5970'
-title: LFPykernels
+title: "LFPykernels"
 version: v0.1.rc4
 doi: 10.5281/zenodo.5720619
 date-released: 2017-12-18
