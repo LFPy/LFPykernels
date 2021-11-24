@@ -1,13 +1,11 @@
 cff-version: 1.2.0
-title: LFPykernels
-message: 'If you use this software, please cite it as below.'
-type: software
+message: "If you use this software, please cite it as below."
 authors:
-  - given-names: Espen
-    family-names: Hagen
-    affiliation: Norwegian University of Life Sciences
-    orcid: 'https://orcid.org/0000-0002-1321-5970'
-title: LFPy/LFPykernels: LFPykernels-0.1.rc1
-version: v0.1.rc1
-doi: 10.5281/zenodo.5720619
+  - family-names: "Hagen"
+    given-names: "Espen"
+    orcid: "https://orcid.org/0000-0002-1321-5970"
+title: "LFPykernels"
+version: 0.1.rc4
+doi: "10.5281/zenodo.5720619"
 date-released: 2017-12-18
+url: "https://github.com/LFPy/LFPykernels"
