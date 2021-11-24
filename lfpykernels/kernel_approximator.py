@@ -346,7 +346,7 @@ class KernelApprox(object):
 
     def get_kernel(self, probes, Vrest=-65, dt=2**-4,
                    X='E', t_X=200, tau=50,
-                   g_eff=True):
+                   g_eff=True, fir=False):
         '''Compute linear spike-to-signal filter kernel mapping presynaptic
         population firing rates/spike trains to signal measurement, e.g., LFP.
 
@@ -371,6 +371,12 @@ class KernelApprox(object):
             if True (default), account for contributions by synaptic
             conductances to the effective membrane time constant from
             presynaptic populations X and extrinsic connections.
+        fir: bool
+            if True, return only filter coefficients corresponding to time lags
+            greater than zero on the interval [dt, tau] corresponding to that
+            of a finite impulse response (FIR) filter. If False (default),
+            the full set of coefficients on the interval [-tau, tau] is
+            returned.
 
         Returns
         -------
@@ -524,7 +530,10 @@ class KernelApprox(object):
         cell.simulate(rec_imem=True)
 
         # compute and extract kernels
-        inds = (cell.tvec >= (t_X - tau)) & (cell.tvec <= (t_X + tau))
+        if fir:
+            inds = (cell.tvec > t_X) & (cell.tvec <= (t_X + tau))
+        else:
+            inds = (cell.tvec >= (t_X - tau)) & (cell.tvec <= (t_X + tau))
         H_YX = dict()
         for probe in probes:
             probe.cell = cell
