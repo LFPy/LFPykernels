@@ -140,3 +140,6 @@ examples/mod/aarch64
 lfpykernels/tests/x86_64
 lfpykernels/tests/arm64
 lfpykernels/tests/aarch64
+
+# example file output
+*.pdf
