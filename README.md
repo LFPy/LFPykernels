@@ -290,7 +290,12 @@ or
     $ docker run -it -p 5000:5000 lfpykernels
 
 
-The ``--mount`` option can be used to mount a folder on the host to a target folder as:
+If the docker file should fail for some reason it is possible to store the build log and avoid build caches by issuing
+
+    $ docker build --no-cache --progress=plain -t lfpykernels - < Dockerfile 2>&1 | tee lfpykernels.log
+
+
+For successful builds, the ``--mount`` option can be used to mount a folder on the host to a target folder as:
 
     $ docker run --mount type=bind,source="$(pwd)",target=/opt/data -it -p 5000:5000 lfpykernels
 
