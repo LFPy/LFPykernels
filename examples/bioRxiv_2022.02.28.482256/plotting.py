@@ -83,8 +83,10 @@ def draw_lineplot(
                 [-1, -2], lw=2, color='k', clip_on=False)
         # bbox = ax.get_window_extent().transformed(ax.get_figure().inverted())
         fig = ax.get_figure()
-        figwidth = fig.figbbox.transformed(fig.dpi_scale_trans.inverted()).width
-        axwidth = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted()).width
+        figwidth = fig.figbbox.transformed(
+            fig.dpi_scale_trans.inverted()).width
+        axwidth = ax.get_window_extent().transformed(
+            fig.dpi_scale_trans.inverted()).width
         # bbox.width
         # ax.text(x[-1] + (x[-1] - x[0]) / width * 0.1, 0.5, 'test')
         ax.text(tvec[tinds][-1] + np.diff(T) * figwidth / axwidth * 0.005, -1.5,

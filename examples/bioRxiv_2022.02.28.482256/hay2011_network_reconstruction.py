@@ -139,7 +139,7 @@ if __name__ == '__main__':
     if i_syn:
         if RANK == 0:
             nu_X = methods.compute_mean_nu_X(params, OUTPUTPATH_REAL,
-                                        TRANSIENT=TRANSIENT)
+                                             TRANSIENT=TRANSIENT)
         else:
             nu_X = None
         nu_X = COMM.bcast(nu_X, root=0)

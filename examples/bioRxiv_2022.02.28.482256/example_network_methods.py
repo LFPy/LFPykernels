@@ -401,8 +401,8 @@ def compute_mean_nu_X(params, OUTPUTPATH, TRANSIENT=200.):
             times = np.concatenate(f[X]['times'][()])
             times = times[times >= TRANSIENT]
             mean_nu_X[X] = (times.size / N_X
-                       / (params.networkParameters['tstop'] - TRANSIENT)
-                       * 1000)
+                            / (params.networkParameters['tstop'] - TRANSIENT)
+                            * 1000)
     return mean_nu_X
 
 
@@ -467,7 +467,7 @@ def coherence(x, y, Fs=16000, NFFT=256, noverlap=192, library='mpl', **kwargs):
     '''
     if library == 'mpl':
         P_xy, freqs = mlab.csd(x, y, Fs=Fs, NFFT=NFFT, noverlap=noverlap,
-                                   **kwargs)
+                               **kwargs)
         P_xx, _ = mlab.psd(x, Fs=Fs, NFFT=NFFT, noverlap=noverlap, **kwargs)
         P_yy, _ = mlab.psd(y, Fs=Fs, NFFT=NFFT, noverlap=noverlap, **kwargs)
     elif library == 'scipy':

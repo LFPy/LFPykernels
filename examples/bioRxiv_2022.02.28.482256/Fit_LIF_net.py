@@ -114,7 +114,8 @@ def get_mean_spike_rate(times):
 
 
 def get_psd(nu, cutoff=200):
-    freqs, Pxx = ss.welch(nu, fs=Fs, nperseg=NFFT, noverlap=noverlap, detrend=detrend)
+    freqs, Pxx = ss.welch(nu, fs=Fs, nperseg=NFFT,
+                          noverlap=noverlap, detrend=detrend)
     return freqs[freqs <= cutoff], Pxx[freqs <= cutoff]
 
 
@@ -372,11 +373,12 @@ ax.legend()
 # In[ ]:
 '''
 
+
 def get_lif_data(x=[1.5, 1.5, -20., -15., 27.6, 3.0, 3.0, 3.0, 3.0, 269, 100]):
     params = dict(
         X=['E', 'I'],
         N_X=[8192, 1024],
-        C_m_X=[x[9], x[10]], # [269., 100.],
+        C_m_X=[x[9], x[10]],  # [269., 100.],
         tau_m_X=[10., 10.],
         E_L_X=[-65., -65.],
         C_YX=[[0.5, 0.5], [0.5, 0.5]],
@@ -408,6 +410,7 @@ def get_lif_data(x=[1.5, 1.5, -20., -15., 27.6, 3.0, 3.0, 3.0, 3.0, 269, 100]):
 
     return mean_nu_X, nu_X, psd_X
 
+
 '''
 # In[ ]:
 
@@ -419,6 +422,7 @@ lif_mean_nu_X, lif_nu_X, lif_psd_X = get_lif_data(
 # In[ ]:
 '''
 
+
 class LifNet(Problem):
     """inherited pymoo Problem class required for minimizer"""
 
@@ -428,7 +432,6 @@ class LifNet(Problem):
                          n_constr=0,
                          xl=[1.1, 1.5, -25., -14., 28, 1.0, 1.0, 1.0, 1.0, 270, 100],
                          xu=[1.8, 2.1, -18., -8., 32, 4.0, 4.0, 4.0, 4.0, 310, 120])
-
 
     def _evaluate(self, x, out, *args, **kwargs):
         f0 = []

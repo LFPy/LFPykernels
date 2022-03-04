@@ -152,7 +152,7 @@ if __name__ == '__main__':
 
     # create E and I populations:
     for j, (name, size) in enumerate(zip(params.population_names,
-                                                     params.population_sizes)):
+                                         params.population_sizes)):
         popParams = deepcopy(params.populationParameters)
         popParams['rotation_args'] = deepcopy(params.rotation_args[name])
         popParams['cell_args'] = deepcopy(params.cellParameters[name])
@@ -202,14 +202,13 @@ if __name__ == '__main__':
                 multapseargs=params.multapseArguments[i][j],
                 syn_pos_args=params.synapsePositionArguments[i][j],
                 save_connections=save_connections,
-        )
+            )
 
     # tic tac
     tac = time()
     if RANK == 0:
         with open(os.path.join(OUTPUTPATH, 'tic_tac.txt'), 'a') as f:
             f.write(f'connect {tac - tic}\n')
-
 
     # set up extracellular recording device.
     # Here `cell` is set to None as handles to cell geometry is handled
@@ -286,7 +285,7 @@ if __name__ == '__main__':
             with h5py.File(
                 os.path.join(OUTPUTPATH,
                              '{}.h5'.format(probe.__class__.__name__)), 'w'
-                           ) as f:
+            ) as f:
                 f['data'] = probe.data
 
     # tic tac

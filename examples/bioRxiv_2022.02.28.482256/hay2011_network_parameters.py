@@ -25,13 +25,14 @@ cellParameters = dict(
         passive=False,
         nsegs_method=None,
         delete_sections=False,
-        ),
+    ),
     I=dict(
         morphology='BallAndSticks_I.hoc',
         templatefile='BallAndSticksTemplate.hoc',
         templatename='BallAndSticksTemplate',
         custom_fun=[set_active],
-        custom_fun_args=[dict(Vrest=-65.)],  # [dict(Vrest=Vrest)] set at runtime
+        # [dict(Vrest=Vrest)] set at runtime
+        custom_fun_args=[dict(Vrest=-65.)],
         templateargs=None,
         delete_sections=False,
     )

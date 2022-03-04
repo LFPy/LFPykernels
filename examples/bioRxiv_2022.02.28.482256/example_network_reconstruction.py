@@ -96,7 +96,7 @@ if __name__ == '__main__':
                                weight_IE=weight_IE,
                                weight_EI=weight_EI,
                                weight_II=weight_II,
-                               weight_scaling = weight_scaling,
+                               weight_scaling=weight_scaling,
                                n_ext=PS0['n_ext'].value))
     js_0 = json.dumps(pset_0, sort_keys=True).encode()
     md5_0 = hashlib.md5(js_0).hexdigest()
@@ -115,11 +115,15 @@ if __name__ == '__main__':
     elif biophys == 'frozen':
         custom_fun = [methods.set_frozen_hay2011, methods.make_cell_uniform]
     elif biophys == 'frozen_no_Ih':
-        custom_fun = [methods.set_frozen_hay2011_no_Ih, methods.make_cell_uniform]
+        custom_fun = [
+            methods.set_frozen_hay2011_no_Ih,
+            methods.make_cell_uniform]
     elif biophys == 'Ih':
         custom_fun = [methods.set_Ih_hay2011, methods.make_cell_uniform]
     elif biophys == 'lin':
-        custom_fun = [methods.set_Ih_linearized_hay2011, methods.make_cell_uniform]
+        custom_fun = [
+            methods.set_Ih_linearized_hay2011,
+            methods.make_cell_uniform]
     else:
         raise NotImplementedError
 
@@ -154,7 +158,7 @@ if __name__ == '__main__':
     if i_syn:
         if RANK == 0:
             nu_X = methods.compute_mean_nu_X(params, OUTPUTPATH_REAL,
-                                        TRANSIENT=TRANSIENT)
+                                             TRANSIENT=TRANSIENT)
         else:
             nu_X = None
         nu_X = COMM.bcast(nu_X, root=0)
@@ -236,11 +240,12 @@ if __name__ == '__main__':
                             beta = methods.integrate_beta(extPar['tau1'],
                                                           extPar['tau2'])
                             g_shift = (
-                                abs(params.extSynapseParameters['weight'])  # uS
+                                # uS
+                                abs(params.extSynapseParameters['weight'])
                                 / cell.area[i]  # um**2
                                 * beta  # ms
                                 / (params.netstim_interval)  # ms
-                                )  # unit (hekto-S/cm**2)
+                            )  # unit (hekto-S/cm**2)
                             try:
                                 cell.allseglist[i].g_pas += (
                                     g_shift * 100)  # unit: S/cm**2
@@ -257,7 +262,6 @@ if __name__ == '__main__':
     if RANK == 0:
         with open(os.path.join(OUTPUTPATH, 'tic_tac.txt'), 'a') as f:
             f.write(f'create {tic - tac}\n')
-
 
     # recreate synapses of recurrent network using spike times of network
     # for activation times - a.k.a. hybrid scheme
@@ -294,9 +298,10 @@ if __name__ == '__main__':
                                 # compute and apply shift of seg.g_pas:
                                 if g_eff:
                                     if d['syntype'] == 'Exp2SynI':
-                                        # compute area under temporal kernel (ms)
-                                        beta = methods.integrate_beta(d['tau1'],
-                                                                      d['tau2'])
+                                        # compute area under temporal kernel
+                                        # (ms)
+                                        beta = methods.integrate_beta(
+                                            d['tau1'], d['tau2'])
                                         g_shift = (abs(c['weight'])
                                                    / cell.area[idx]
                                                    * beta
@@ -308,11 +313,12 @@ if __name__ == '__main__':
                                             cell.allseglist[idx].gl_hh += (
                                                 g_shift * 0.1)  # unit: S/cm**2
                                     else:
-                                        errmsg = '{} not supported'.format(d['syntype'])
+                                        errmsg = '{} not supported'.format(
+                                            d['syntype'])
                                         raise NotImplementedError(errmsg)
                             else:
                                 d['weight'] = c['weight']
-                                if type(d['syntype']) is bytes:
+                                if isinstance(d['syntype'], bytes):
                                     d['syntype'] = d['syntype'].decode()
 
                             # create Synapse
@@ -378,7 +384,7 @@ if __name__ == '__main__':
             with h5py.File(
                 os.path.join(OUTPUTPATH,
                              '{}.h5'.format(probe.__class__.__name__)), 'w'
-                           ) as f:
+            ) as f:
                 f['data'] = probe.data
 
     # tic tac
