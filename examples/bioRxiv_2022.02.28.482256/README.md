@@ -42,7 +42,7 @@ For the preprint above, we mainly used the following software and versions there
     mpich 3.3.2,
     mpi4py 3.0.3,
     h5py 2.10.0,
-    NEURON 8.0.2,
+    NEURON 8.0.0,
     MEAutility 1.5.0,
     LFPykit 0.4,
     LFPy 2.2.4,
