@@ -63,7 +63,8 @@ Make sure that above requirements are met (for a self-contained solution see con
 
 Fetch Hay et al. 2011 model files needed for some simulations using Python:
 
-    $ ipython
+    ipython
+    # import modules
     >>> from urllib.request import urlopen
     >>> import zipfile
     >>> import ssl
@@ -78,6 +79,7 @@ Fetch Hay et al. 2011 model files needed for some simulations using Python:
     >>> myzip = zipfile.ZipFile('L5bPCmodelsEH.zip', 'r')
     >>> myzip.extractall('.')
     >>> myzip.close()
+    >>> quit()
 
 
 Compile NMODL files in folder `./mod`:
@@ -89,7 +91,7 @@ Start jobs on the HPC resource via Slurm (https://slurm.schedmd.com/documentatio
 These files must be modified by the user for the particular HPC resource in question:
 
     python run_pscan.py
-    python run_hay_pscan.py
+    python run_hay2011_pscan.py
 
 
 In case all jobs finished without errors, fit some point-neuron network parameters to mimic the spiking activity of the ground-truth network simulation:
@@ -97,7 +99,7 @@ In case all jobs finished without errors, fit some point-neuron network paramete
     $ sbatch Fit_LIF_net.job
 
 
-Finally, if all above steps finalized, the figures etc. from the preprint was generated in the provided jupyter notebooks. A jupyter session can be invoked from the terminal issuing:
+Finally, if all above steps finished without errors, the figures etc. from the preprint was generated in the provided jupyter notebooks. A jupyter session can be invoked from the terminal issuing:
 
     jupyter-notebook
     # or
