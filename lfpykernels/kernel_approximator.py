@@ -633,8 +633,8 @@ class GaussCylinderPotential(lfpykit.LinearModel):
             np.sqrt((z_e - z_i)**2 + self.R**2) - abs(z_e - z_i))
 
     def _g(self, z):
-        return np.exp(-(z / self.sigma_z)**2 / 2) / (
-            self.sigma_z * np.sqrt(2 * np.pi))
+        return np.exp(-(z /self.sigma_z)**2 / 2
+                                                    ) / (self.sigma_z   *np.sqrt(2 * np.pi))
 
     def _func(self, z, z_e=0, z_i=0):
         return self._f(z_e - z, z_i) * self._g(z)
