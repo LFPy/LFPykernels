@@ -134,12 +134,17 @@ dmypy.json
 .DS_Store
 
 # NMODL stuff
-examples/mod/x86_64
-examples/mod/arm64
-examples/mod/aarch64
-lfpykernels/tests/x86_64
-lfpykernels/tests/arm64
-lfpykernels/tests/aarch64
+x86_64
+arm64
+aarch64
 
 # example file output
 *.pdf
+*.h5
+*.zip
+/examples/bioRxiv_2022.02.28.482256/L5bPCmodelsEH
+/examples/bioRxiv_2022.02.28.482256/jobs/
+/examples/bioRxiv_2022.02.28.482256/parameters/
+/examples/bioRxiv_2022.02.28.482256/logs/
+/examples/bioRxiv_2022.02.28.482256/output/
+/examples/bioRxiv_2022.02.28.482256/figures/
