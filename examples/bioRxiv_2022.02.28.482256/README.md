@@ -169,12 +169,16 @@ Output:
 - `figures/`: figure output directory for below notebooks
 - `PS*.txt`: `parameters.ParameterSpace` files for the different simulations started by `run_pscan.py`
 - `hay2011_PS*.txt`: `parameters.ParameterSpace` files for the different simulations started by `run_hay2011_pscan.py`
-- `Fit_LIF_net.h5`: file output created by successful runs of `Fit_LIF_net.py` containing parameters and metrics as for each generation running the NSGA-II algorithm 
+- `Fit_LIF_net.h5`: file output created by successful runs of `Fit_LIF_net.py` containing parameters and metrics for each generation running the NSGA-II multi-objective optimization algorithm
 
 
 Notebooks:
 
 - `Figure*.ipynb`: Jupyter notebooks used to generate the corresponding figures post simulation plus some analysis
+
+
+A 3.16GB .zip file with some precomputed output data is available for download from https://drive.google.com/file/d/11Ie1bmzGHFa_K599bhvdco3vOn98eu3C/view?usp=sharing
+Unzip it's content in this directory, and one should be able to execute all notebooks.
 
 
 ### Issues:
