@@ -17,7 +17,6 @@ GNU General Public License for more details.
 """
 import numpy as np
 import scipy.signal as ss
-import matplotlib.pyplot as plt
 
 
 def remove_axis_junk(ax, lines=['right', 'top']):
@@ -89,7 +88,8 @@ def draw_lineplot(
             fig.dpi_scale_trans.inverted()).width
         # bbox.width
         # ax.text(x[-1] + (x[-1] - x[0]) / width * 0.1, 0.5, 'test')
-        ax.text(tvec[tinds][-1] + np.diff(T) * figwidth / axwidth * 0.005, -1.5,
+        ax.text(tvec[tinds][-1] + np.diff(T) * figwidth / axwidth * 0.005,
+                -1.5,
                 '$2^{' + '{}'.format(int(round(np.log2(vlimround)))
                                      ) + '}$ ' + '{0}'.format(unit),
                 color='k', rotation='vertical',

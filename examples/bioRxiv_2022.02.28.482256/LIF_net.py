@@ -211,7 +211,8 @@ class Network(object):
             for X in self.X:
                 for Y in self.X:
                     self.multimeters[k][f'{Y}:{X}'] = nest.Create(
-                        'multimeter', 1, {'interval': self.dt, 'label': f'{k}_{Y}:{X}'})
+                        'multimeter', 1,
+                        {'interval': self.dt, 'label': f'{k}_{Y}:{X}'})
                     self.multimeters[k][f'{Y}:{X}'].set({"record_from": ["y"]})
 
         # connect FIR filter nodes to the corresponding presynaptic populations

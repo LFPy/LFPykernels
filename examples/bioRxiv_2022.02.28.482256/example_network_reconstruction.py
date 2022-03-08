@@ -302,10 +302,11 @@ if __name__ == '__main__':
                                         # (ms)
                                         beta = methods.integrate_beta(
                                             d['tau1'], d['tau2'])
+                                        # (deci-S/cm**2):
                                         g_shift = (abs(c['weight'])
                                                    / cell.area[idx]
                                                    * beta
-                                                   * nu_X[pre])  # (deci-S/cm**2)
+                                                   * nu_X[pre])
                                         try:
                                             cell.allseglist[idx].g_pas += (
                                                 g_shift * 0.1)  # unit: S/cm**2

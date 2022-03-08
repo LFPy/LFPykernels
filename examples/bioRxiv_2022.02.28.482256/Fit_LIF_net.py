@@ -11,7 +11,6 @@ import json
 from example_network_parameters import (networkParameters, population_names,
                                         population_sizes)
 import example_network_methods as methods
-import scipy.signal as ss
 import h5py
 import matplotlib.pyplot as plt
 import numpy as np
@@ -107,9 +106,12 @@ def get_lif_data(x=[1.5, 1.5, -20., -15., 27.6, 3.0, 3.0, 3.0, 3.0, 269, 100]):
         times = nest.GetStatus(net.spike_recorders[X])[0]['events']['times']
         times = times[times >= TRANSIENT]
 
-        mean_nu_X += [LIF_net.get_mean_spike_rate(times,
-                                          TRANSIENT=TRANSIENT,
-                                          tstop=tstop) / population_sizes[i]]
+        mean_nu_X += [
+            LIF_net.get_mean_spike_rate(
+                times,
+                TRANSIENT=TRANSIENT,
+                tstop=tstop) /
+            population_sizes[i]]
         _, lif_nu_X = LIF_net.get_spike_rate(
             times, TRANSIENT=TRANSIENT, tstop=tstop, dt=dt)
         nu_X += [lif_nu_X]

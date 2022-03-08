@@ -445,7 +445,8 @@ def coherence(x, y, Fs=16000, NFFT=256, noverlap=192, library='mpl', **kwargs):
     y: ndarray
         signal
     Fs: float, default: 16000
-        The sampling frequency (samples per time unit).  It is used to calculate
+        The sampling frequency (samples per time unit).  It is used to
+        calculate
         the Fourier frequencies, *freqs*, in cycles per time unit.
     NFFT: int, default: 256
         The number of data points used in each block for the FFT.  A power 2 is
@@ -454,7 +455,8 @@ def coherence(x, y, Fs=16000, NFFT=256, noverlap=192, library='mpl', **kwargs):
     noverlap: int, default: 192 (no overlap)
         The number of points of overlap between segments.
     library: str
-        if ``library=='mpl'``, use matplotlib; if ``library=='scipy'`` use scipy
+        if ``library=='mpl'``, use matplotlib; if ``library=='scipy'``
+        use scipy
     **kwargs:
         additional arguments to the wrapped functions
 
