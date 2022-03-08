@@ -156,6 +156,7 @@ Packaged files:
 - `BallAndSticks*.hoc`: cell geometry/template files in NEURON's HOC language
 - `Fit_LIF_net.py`: script for fitting parameters of spiking point-neuron network
 - `Fit_LIF_net.job`: Slurm job script for `Fit_LIF_net.py`. Adapt as necessary for HPC resource.
+- `LIF_net.py`: Common classes/methods used by `Fit_LIF_net.py` and `Figure16.ipynb`
 - `README.md`: This file
 
 
