@@ -66,7 +66,7 @@ setuptools.setup(
         'Development Status :: 4 - Beta',
     ],
     python_requires='>=3.6',
-    install_requires=['LFPy>=2.2.3'],
+    install_requires=['LFPy>=2.2.4'],
     package_data={
         'lfpykernels': [
             os.path.join('tests', '*.py'),

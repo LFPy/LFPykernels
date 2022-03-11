@@ -1,2 +1,2 @@
 # essential:
-LFPy>=2.2.3
+LFPy>=2.2.4

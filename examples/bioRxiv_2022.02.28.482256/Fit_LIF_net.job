@@ -1,0 +1,14 @@
+#!/bin/bash
+##################################################################
+#SBATCH --account icei-hbp-2020-0005
+#SBATCH --partition batch
+#SBATCH --job-name Fit_LIF_net
+#SBATCH --time 8:00:00
+#SBATCH -o logs/Fit_LIF_net.txt
+#SBATCH -e logs/Fit_LIF_net.txt
+####SBATCH -N 1
+#SBATCH --ntasks 32
+##################################################################
+# from here on we can run whatever command we want
+unset DISPLAY # DISPLAY somehow problematic with Slurm
+python -u Fit_LIF_net.py
