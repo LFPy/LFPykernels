@@ -41,6 +41,31 @@ BibTex format:
     }
 
 
+These codes correspond to results shown in the preprint manuscript:
+
+    Brain signal predictions from multi-scale networks using a linearized framework
+    Espen Hagen, Steinn H. Magnusson, Torbjørn V. Ness, Geir Halnes, Pooja N. Babu, Charl Linssen, Abigail Morrison, Gaute T. Einevoll
+    bioRxiv 2022.02.28.482256; doi: https://doi.org/10.1101/2022.02.28.482256
+
+
+Bibtex format:
+
+    @article {Hagen2022.02.28.482256,
+    	author = {Hagen, Espen and Magnusson, Steinn H. and Ness, Torbjørn V. and Halnes, Geir and Babu, Pooja N. and Linssen, Charl and Morrison, Abigail and Einevoll, Gaute T.},
+    	title = {Brain signal predictions from multi-scale networks using a linearized framework},
+    	elocation-id = {2022.02.28.482256},
+    	year = {2022},
+    	doi = {10.1101/2022.02.28.482256},
+    	publisher = {Cold Spring Harbor Laboratory},
+    	URL = {https://www.biorxiv.org/content/early/2022/03/02/2022.02.28.482256},
+    	eprint = {https://www.biorxiv.org/content/early/2022/03/02/2022.02.28.482256.full.pdf},
+    	journal = {bioRxiv}
+    }
+
+If you use or refer to this work, please cite it as above.
+Adaptations or modifications of this work should comply with the provided `LICENSE` file provided with this repository.  
+
+
 ## Features
 
 The ``LFPykernels`` package incorporates forward-model based calculations of causal spike-signal
