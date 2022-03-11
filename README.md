@@ -9,7 +9,7 @@ impulse response functions for finite-sized neuronal network models.
 [![DOI](https://zenodo.org/badge/424143558.svg)](https://zenodo.org/badge/latestdoi/424143558)
 [![Coverage Status](https://coveralls.io/repos/github/LFPy/LFPykernels/badge.svg?branch=main)](https://coveralls.io/github/LFPy/LFPykernels?branch=main)
 [![Documentation Status](https://readthedocs.org/projects/lfpykernels/badge/?version=latest)](https://lfpykernels.readthedocs.io/en/latest/?badge=latest)
-[![Lintly flake8 checks](https://github.com/LFPy/lfpykernels/workflows/Lintly%20flake8%20checks/badge.svg)](https://github.com/LFPy/LFPykernels/actions?query=workflow%3A%22Lintly+flake8+checks%22)
+[![flake8 lint](https://github.com/LFPy/LFPykernels/actions/workflows/flake8.yml/badge.svg)](https://github.com/LFPy/LFPykernels/actions/workflows/flake8.yml)
 [![Python application](https://github.com/LFPy/LFPykernels/workflows/Python%20application/badge.svg)](https://github.com/LFPy/LFPykernels/actions?query=workflow%3A%22Python+application%22)
 [![Upload Python Package](https://github.com/LFPy/LFPykernels/workflows/Upload%20Python%20Package/badge.svg)](https://pypi.org/project/LFPykernels)
 [![Conda Recipe](https://img.shields.io/badge/recipe-lfpykernels-green.svg)](https://anaconda.org/conda-forge/lfpykernels)
