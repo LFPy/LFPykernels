@@ -5,7 +5,7 @@ authors:
     given-names: "Espen"
     orcid: "https://orcid.org/0000-0002-1321-5970"
 title: "LFPykernels"
-version: 0.1.rc6
+version: 0.1.rc7
 doi: "10.5281/zenodo.5720619"
 date-released: 2021-11-24
 url: "https://github.com/LFPy/LFPykernels"
