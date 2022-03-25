@@ -339,3 +339,8 @@ container can be accessed after invoking them by issuing:
 
 and opening the resulting URL in a browser on the host computer, similar to:
 http://127.0.0.1:5000/?token=dcf8f859f859740fc858c568bdd5b015e0cf15bfc2c5b0c1
+
+
+## Acknowledgements
+
+This work was supported by the European Union Horizon 2020 Research and Innovation Programme under Grant Agreement No. 785907 and No. 945539 Human Brain Project (HBP) SGA2 and SGA3.
