@@ -210,6 +210,10 @@ if __name__ == '__main__':
         with open(os.path.join(OUTPUTPATH, 'tic_tac.txt'), 'a') as f:
             f.write(f'connect {tac - tic}\n')
 
+    # record membrane voltages for 1st cell per population per MPI RANK
+    for name in params.population_names:
+        network.populations[name].cells[0]._set_voltage_recorders(1.)
+
     # set up extracellular recording device.
     # Here `cell` is set to None as handles to cell geometry is handled
     # internally
@@ -228,6 +232,10 @@ if __name__ == '__main__':
         probes=[electrode, current_dipole_moment, csd],
         **params.networkSimulationArguments
     )
+
+    # gather recorded membrane potentials
+    for name in params.population_names:
+        network.populations[name].cells[0]._collect_vmem()
 
     # tic tac
     tic = time()
@@ -287,6 +295,22 @@ if __name__ == '__main__':
                              '{}.h5'.format(probe.__class__.__name__)), 'w'
             ) as f:
                 f['data'] = probe.data
+
+    # reduce compartmental membrane voltages and store
+    if RANK == 0:
+        with h5py.File(os.path.join(OUTPUTPATH, 'vmem.h5'), 'w') as f:
+            pass
+    for name in params.population_names:
+        sendbuf = np.median(network.populations[name].cells[0].vmem[:, 2000:],
+                            axis=-1)
+        if RANK == 0:
+            recvbuf = np.zeros(sendbuf.size)
+        else:
+            recvbuf = None
+        COMM.Reduce(sendbuf, recvbuf, op=MPI.SUM, root=0)
+        if RANK == 0:
+            with h5py.File(os.path.join(OUTPUTPATH, 'vmem.h5'), 'a') as f:
+                f[name] = recvbuf / SIZE
 
     # tic tac
     tac = time()

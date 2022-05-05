@@ -19,6 +19,24 @@ import numpy as np
 import scipy.signal as ss
 
 
+# common plotting parameters
+rcParams = {
+    'axes.xmargin': 0.01,
+    'axes.ymargin': 0.01,
+    'font.size': 14,
+    'legend.fontsize': 12,
+    'axes.titlesize': 14,
+    'xtick.labelsize': 14,
+    'ytick.labelsize': 14,
+    'figure.dpi': 120.0,
+    'axes.labelpad': 0,
+    'legend.borderpad': 0.1,
+    'legend.labelspacing': 0.1,
+}
+
+golden_ratio = (1 + np.sqrt(5)) / 2
+figwidth = 14 # inches
+
 def remove_axis_junk(ax, lines=['right', 'top']):
     """remove chosen lines from plotting axis"""
     for loc, spine in ax.spines.items():
@@ -79,7 +97,7 @@ def draw_lineplot(
 
     if scalebar:
         ax.plot([tvec[tinds][-1], tvec[tinds][-1]],
-                [-1, -2], lw=2, color='k', clip_on=False)
+                [0.5, -0.5], lw=2, color='k', clip_on=False)
         # bbox = ax.get_window_extent().transformed(ax.get_figure().inverted())
         fig = ax.get_figure()
         figwidth = fig.figbbox.transformed(
@@ -88,8 +106,7 @@ def draw_lineplot(
             fig.dpi_scale_trans.inverted()).width
         # bbox.width
         # ax.text(x[-1] + (x[-1] - x[0]) / width * 0.1, 0.5, 'test')
-        ax.text(tvec[tinds][-1] + np.diff(T) * figwidth / axwidth * 0.005,
-                -1.5,
+        ax.text(tvec[tinds][-1] + np.diff(T) * figwidth / axwidth * 0.005, 0,
                 '$2^{' + '{}'.format(int(round(np.log2(vlimround)))
                                      ) + '}$ ' + '{0}'.format(unit),
                 color='k', rotation='vertical',

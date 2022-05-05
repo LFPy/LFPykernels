@@ -355,9 +355,12 @@ class KernelApprox(object):
         probes: list of objects
             list of ``LFPykit.models`` like instances
             (should be instantiated with cell=None).
-        Vrest: float
+        Vrest: float of list of float
             Mean/Expectation value of postsynaptic membrane voltage used
-            for linearization of synapse conductances
+            for linearization of synapse conductances.
+            If list of length equal to the number of compartments, the
+            corresponding synapse current magnitude will be computed on a per
+            compartment basis.
         dt: float
             temporal resolution (ms)
         X: str
@@ -429,6 +432,12 @@ class KernelApprox(object):
         for sec in cell.allseclist:
             for seg in sec:
                 cell.allseglist.append(seg)
+
+        # check that if Vrest is a list that the length matches the number of
+        # compartments
+        if type(Vrest) is list:
+            mssg = f'len(Vrest) != cell.totnsegs = {cell.totnsegs}'
+            assert len(Vrest) == cell.totnsegs, mssg
 
         if g_eff:
             # perturb passive leak conductance value due to the missing
@@ -513,16 +522,21 @@ class KernelApprox(object):
                 # modify synapse parameters to account for current-based
                 # synapses linearized around Vrest
                 d = self.synapseParameters[iii].copy()
-                d['weight'] = - d['weight'] * (Vrest - d['e'])
+                if type(Vrest) is list:
+                    w = [- d['weight'] * (Vr - d['e']) for Vr in Vrest]
+                else:
+                    w = [- d['weight'] * (Vrest - d['e'])] * cell.totnsegs
+                    # d['weight'] = - d['weight'] * (Vrest - d['e'])
                 del d['e']  # no longer needed
                 d['syntype'] = d['syntype'] + 'I'
 
                 # create synapses activated by spike time of presynaptic
                 # population X
                 # setting weight scaled by synapses per compartment
-                for idx in range(cell.totnsegs):
+                for idx, w_idx  in enumerate(w):
                     di = d.copy()
-                    di['weight'] = di['weight'] * rho_YX_out[idx]
+                    di['weight'] = w_idx * rho_YX_out[idx]
+                    # di['weight'] = di['weight'] * rho_YX_out[idx]
                     syn = Synapse(cell, idx=idx, **di)
                     syn.set_spike_times(np.array([t_X]))
 
