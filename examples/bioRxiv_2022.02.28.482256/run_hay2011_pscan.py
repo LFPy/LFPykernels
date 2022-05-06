@@ -40,6 +40,7 @@ PS1 = ParameterSpace(
             i_syn=ParameterRange([True]),
             n_ext=ParameterRange([[920, 160]]),
             g_eff=ParameterRange([False, True])
+            perseg_Vrest=ParameterRange([False])
         )
     )
 )
@@ -61,6 +62,7 @@ PS2 = ParameterSpace(
             t_E=ParameterRange([200.]),
             t_I=ParameterRange([400.]),
             g_eff=ParameterRange([True])
+            perseg_Vrest=ParameterRange([False])
         )
     )
 )

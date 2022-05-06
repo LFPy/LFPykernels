@@ -84,15 +84,15 @@ if __name__ == '__main__':
     weight_EI = pset['weight_EI']
     weight_II = pset['weight_II']
     weight_scaling = pset['weight_scaling']
-
     biophys = pset['biophys']
     t_E = np.array([pset['t_E']])
     t_I = np.array([pset['t_I']])
     i_syn = True  # always used
     n_ext = pset['n_ext']
     g_eff = pset['g_eff']
+    perseg_Vrest = pset['perseg_Vrest']
 
-    TRANSIENT = 1000
+    TRANSIENT = 2000
 
     ##########################################################################
     # Set up shared and population-specific parameters
@@ -187,9 +187,14 @@ if __name__ == '__main__':
         # Extract median soma voltages from actual network simulation and
         # assume this value corresponds to Vrest.
         if RANK == 0:
-            with h5py.File(os.path.join(OUTPUTPATH_REAL, 'somav.h5'
-                                        ), 'r') as f:
-                vrest_ = np.median(f[name][()][:, 200:])
+            if perseg_Vrest:
+                with h5py.File(os.path.join(OUTPUTPATH_REAL, 'vmem.h5'
+                                            ), 'r') as f:
+                    vrest_ = np.median(f[name][()][:, TRANSIENT:], axis=-1)
+            else:
+                with h5py.File(os.path.join(OUTPUTPATH_REAL, 'somav.h5'
+                                            ), 'r') as f:
+                    vrest_ = np.median(f[name][()][:, TRANSIENT:])
         else:
             vrest_ = None
         Vrest[name] = COMM.bcast(vrest_, root=0)
@@ -225,8 +230,8 @@ if __name__ == '__main__':
         extPar = params.extSynapseParameters.copy()
         # modify parameters for current_based synapses
         if i_syn:
-            extPar['weight'] = - extPar['weight'] * (Vrest[name] - extPar['e'])
-            del extPar['e']  # no longer needed
+            # extPar['weight'] = - extPar['weight'] * (Vrest[name] - extPar['e'])
+            # del extPar['e']  # no longer needed
             try:
                 extPar['syntype'] = extPar['syntype'] + 'I'
             except TypeError:  # fix w. python > 3.6
@@ -246,7 +251,8 @@ if __name__ == '__main__':
                         interval=params.netstim_interval,
                         seed=np.random.rand() * 2**32 - 1)
                     '''
-                    _ = np.random.rand() * 2**32 - 1  # throw away
+                    _ = np.random.rand() * 2**32 - 1  # throw away to ensure
+                                                      # similar sequences
 
                     if i_syn & g_eff:
                         # compute and apply shift of seg.g_pas:
@@ -302,8 +308,12 @@ if __name__ == '__main__':
                             # for current based synapses
                             d = synapseParameters[i][j].copy()
                             if i_syn:
-                                d['weight'] = - c['weight'] * (Vrest[post]
-                                                               - d['e'])
+                                if perseg_Vrest:
+                                    d['weight'] = - c['weight'] * \
+                                        (Vrest[post][idx] - d['e'])
+                                else:
+                                    d['weight'] = - c['weight'] * (Vrest[post]
+                                                                   - d['e'])
                                 del d['e']  # no longer needed
                                 try:
                                     d['syntype'] = d['syntype'] + 'I'

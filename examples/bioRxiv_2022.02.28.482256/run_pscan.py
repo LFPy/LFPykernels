@@ -19,6 +19,7 @@ PS0 = ParameterSpace(
             weight_II=ParameterRange([0.0020]),  # I onto I
             # linear scaling of all connection weights
             weight_scaling=ParameterRange([0.25, 0.5, 1., 2., 4.]),
+            # weight_scaling=ParameterRange([1.]),
             n_ext=ParameterRange([[465, 160]]),
         )
     )
@@ -39,7 +40,8 @@ PS1 = ParameterSpace(
                                     'frozen']),
             i_syn=ParameterRange([True]),
             n_ext=ParameterRange([[465, 160]]),
-            g_eff=ParameterRange([False, True])
+            g_eff=ParameterRange([False, True]),
+            perseg_Vrest=ParameterRange([False])
         )
     )
 )
@@ -60,7 +62,8 @@ PS2 = ParameterSpace(
             n_ext=ParameterRange([[465, 160]]),
             t_E=ParameterRange([200.]),
             t_I=ParameterRange([400.]),
-            g_eff=ParameterRange([True])
+            g_eff=ParameterRange([True]),
+            perseg_Vrest=ParameterRange([False])
         )
     )
 )
@@ -147,18 +150,21 @@ if 'HOSTNAME' in os.environ.keys():
         raise NotImplementedError(
             f"do not recognize HOST {os.environ['HOSTNAME']}")
 else:
-    for pset in PS0.iter_inner():
-        # sorted json dictionary
-        js = json.dumps(pset, sort_keys=True).encode()
-        md5 = hashlib.md5(js).hexdigest()
+    with open('run_pscan.sh', 'w') as f:
+        for pset in PS0.iter_inner():
+            # sorted json dictionary
+            js = json.dumps(pset, sort_keys=True).encode()
+            md5 = hashlib.md5(js).hexdigest()
 
-        # save parameter file
-        pset.save(url=os.path.join('parameters', '{}.txt'.format(md5)))
+            # save parameter file
+            pset.save(url=os.path.join('parameters', '{}.txt'.format(md5)))
 
-        # run model serially
-        cmd = 'python example_network.py {}'.format(md5)
-        print(cmd)
-        sp.run(cmd.split(' '))
+            # run model serially
+            # cmd = 'python example_network.py {}'.format(md5)
+            cmd = f'mpiexec python -u example_network.py {md5}\n'
+            print(cmd)
+            f.write(cmd)
+            # sp.run(cmd.split(' '))
 
 
 #########
@@ -237,17 +243,20 @@ if 'HOSTNAME' in os.environ.keys():
         raise NotImplementedError(
             f"do not recognize HOST {os.environ['HOSTNAME']}")
 else:
-    for pset in PS1.iter_inner():
-        # sorted json dictionary
-        js = json.dumps(pset, sort_keys=True).encode()
-        md5 = hashlib.md5(js).hexdigest()
+    with open('run_pscan.sh', 'a') as f:
+        for pset in PS1.iter_inner():
+            # sorted json dictionary
+            js = json.dumps(pset, sort_keys=True).encode()
+            md5 = hashlib.md5(js).hexdigest()
 
-        # save parameter file
-        pset.save(url=os.path.join('parameters', '{}.txt'.format(md5)))
+            # save parameter file
+            pset.save(url=os.path.join('parameters', '{}.txt'.format(md5)))
 
-        cmd = 'python -u example_network_reconstruction.py {}'.format(md5)
-        print(cmd)
-        sp.run(cmd.split(' '))
+            # cmd = f'python -u example_network_reconstruction.py {md5}'
+            cmd = f'mpiexec python -u example_network_reconstruction.py {md5}\n'
+            print(cmd)
+            f.write(cmd)
+            # sp.run(cmd.split(' '))
 
 
 #########
@@ -323,14 +332,18 @@ if 'HOSTNAME' in os.environ.keys():
         raise NotImplementedError(
             f"do not recognize HOST {os.environ['HOSTNAME']}")
 else:
-    for pset in PS2.iter_inner():
-        # sorted json dictionary
-        js = json.dumps(pset, sort_keys=True).encode()
-        md5 = hashlib.md5(js).hexdigest()
+    with open('run_pscan.sh', 'a') as f:
+        for pset in PS2.iter_inner():
+            # sorted json dictionary
+            js = json.dumps(pset, sort_keys=True).encode()
+            md5 = hashlib.md5(js).hexdigest()
 
-        # save parameter file
-        pset.save(url=os.path.join('parameters', '{}.txt'.format(md5)))
+            # save parameter file
+            pset.save(url=os.path.join('parameters', '{}.txt'.format(md5)))
 
-        cmd = 'python -u example_network_kernel.py {}'.format(md5)
-        print(cmd)
-        sp.run(cmd.split(' '))
+            # cmd = f'python -u example_network_kernel.py {md5}'
+            cmd = f'mpiexec python -u example_network_kernel.py {md5}\n'
+            print(cmd)
+            f.write(cmd)
+            # sp.run(cmd.split(' '))
+    print('created jobscripts. To execute, issue "bash run_pscan.sh"')

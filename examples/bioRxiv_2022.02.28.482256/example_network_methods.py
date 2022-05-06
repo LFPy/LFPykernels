@@ -31,7 +31,7 @@ def set_active(cell, Vrest):
     cell: object
         LFPy.NetworkCell like object
     Vrest: float
-        Steady state potential
+        Steady state potential (ignored)
     """
     for sec in cell.template.all:
         sec.insert('hh')
@@ -179,20 +179,31 @@ def set_frozen_hay2011(cell, Vrest):
     ----------
     cell: object
         LFPy.NetworkCell like object
-    Vrest: float
-        Steady state potential
+    Vrest: float or list of float
+        Steady state potential. If list, set Vrest per segment
     """
+    i = 0
     for sec in cell.template.all:
         sec.insert('pas')
         sec.insert('NaTa_t_frozen')
         sec.insert('SKv3_1_frozen')
         sec.insert('Ih_linearized_v2_frozen')
-        sec.e_pas = Vrest
-        sec.V_R_NaTa_t_frozen = Vrest
-        sec.V_R_SKv3_1_frozen = Vrest
-        sec.V_R_Ih_linearized_v2_frozen = Vrest
-        sec.ena = Vrest  # 50
-        sec.ek = Vrest  # -85
+        if isinstance(Vrest, float):
+            sec.e_pas = Vrest
+            sec.V_R_NaTa_t_frozen = Vrest
+            sec.V_R_SKv3_1_frozen = Vrest
+            sec.V_R_Ih_linearized_v2_frozen = Vrest
+            sec.ena = Vrest  # 50
+            sec.ek = Vrest  # -85
+        else:
+            for seg in sec:
+                seg.e_pas = Vrest[i]
+                seg.V_R_NaTa_t_frozen = Vrest[i]
+                seg.V_R_SKv3_1_frozen = Vrest[i]
+                seg.V_R_Ih_linearized_v2_frozen = Vrest[i]
+                seg.ena = Vrest[i]  # 50
+                seg.ek = Vrest[i]  # -85
+            i += 1
         if sec.name().rfind('soma') >= 0:
             sec.gNaTa_tbar_NaTa_t_frozen = 2.04
             sec.gSKv3_1bar_SKv3_1_frozen = 0.693
@@ -270,20 +281,32 @@ def set_Ih_linearized_hay2011(cell, Vrest):
     ----------
     cell: object
         LFPy.NetworkCell like object
-    Vrest: float
-        Steady state potential
+    Vrest: float or list of float
+        Steady state potential. If list, set per segment
     """
+    i = 0
     for sec in cell.template.all:
         sec.insert('pas')
         sec.insert('NaTa_t_frozen')
         sec.insert('SKv3_1_frozen')
         sec.insert('Ih_linearized_v2')
-        sec.e_pas = Vrest
-        sec.V_R_Ih_linearized_v2 = Vrest
-        sec.V_R_NaTa_t_frozen = Vrest
-        sec.V_R_SKv3_1_frozen = Vrest
-        sec.ena = Vrest  # 50
-        sec.ek = Vrest  # -85
+        if isinstance(Vrest, float):
+            sec.e_pas = Vrest
+            sec.V_R_Ih_linearized_v2 = Vrest
+            sec.V_R_NaTa_t_frozen = Vrest
+            sec.V_R_SKv3_1_frozen = Vrest
+            sec.ena = Vrest  # 50
+            sec.ek = Vrest  # -85
+        else:
+            for seg in sec:
+                seg.e_pas = Vrest[i]
+                seg.V_R_Ih_linearized_v2 = Vrest[i]
+                seg.V_R_NaTa_t_frozen = Vrest[i]
+                seg.V_R_SKv3_1_frozen = Vrest[i]
+                seg.ena = Vrest[i]  # 50
+                seg.ek = Vrest[i]  # -85
+                i += 1
+
 
         if sec.name().rfind('soma') >= 0:
             sec.gNaTa_tbar_NaTa_t_frozen = 2.04
@@ -335,10 +358,16 @@ def set_V_R(cell, Vrest):
         "NaTa_t_frozen",
         "Im_frozen"
     ]
-    for sec in cell.template.all:
-        for ion in ion_channels:
+    for ion in ion_channels:
+        i = 0
+        for sec in cell.template.all:
             if neuron.h.ismembrane(ion, sec=sec):
-                setattr(sec, f'V_R_{ion}', Vrest)
+                if isinstance(Vrest, float):
+                    setattr(sec, f'V_R_{ion}', Vrest)
+                else:
+                    for seg in sec:
+                        setattr(seg, f'V_R_{ion}', Vrest[i])
+                        i += 1
 
 
 def make_cell_uniform(cell, Vrest=-65):
@@ -350,10 +379,14 @@ def make_cell_uniform(cell, Vrest=-65):
     cell: object
         LFPy.NetworkCell like object
     Vrest: float
-        Steady state potential
+        Steady state potential. If list of float; only the first element
+        will be used for cell initialization.
     """
     neuron.h.t = 0
-    neuron.h.finitialize(Vrest)
+    if isinstance(Vrest, float):
+        neuron.h.finitialize(Vrest)
+    else:
+        neuron.h.finitialize()
     neuron.h.fcurrent()
     for sec in cell.allseclist:
         for seg in sec:

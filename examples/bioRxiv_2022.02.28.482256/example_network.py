@@ -298,15 +298,14 @@ if __name__ == '__main__':
             ) as f:
                 f['data'] = probe.data
 
-    # reduce compartmental membrane voltages and store
+    # compute mean compartmental membrane voltages across cells and store
     if RANK == 0:
         with h5py.File(os.path.join(OUTPUTPATH, 'vmem.h5'), 'w') as f:
             pass
     for name in params.population_names:
-        sendbuf = np.median(network.populations[name].cells[0].vmem[:, 2000:],
-                            axis=-1)
+        sendbuf = network.populations[name].cells[0].vmem
         if RANK == 0:
-            recvbuf = np.zeros(sendbuf.size)
+            recvbuf = np.zeros(sendbuf.shape)
         else:
             recvbuf = None
         COMM.Reduce(sendbuf, recvbuf, op=MPI.SUM, root=0)
