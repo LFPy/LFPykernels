@@ -18,7 +18,7 @@ PS0 = ParameterSpace(
             weight_EI=ParameterRange([0.0045]),  # I onto E
             weight_II=ParameterRange([0.0020]),  # I onto I
             # linear scaling of all connection weights
-            weight_scaling=ParameterRange([0.25, 0.5, 1., 2., 4.]),
+            weight_scaling=ParameterRange([0.975, 1., 1.025, 1.050, 1.075]),
             # weight_scaling=ParameterRange([1.]),
             n_ext=ParameterRange([[465, 160]]),
         )
