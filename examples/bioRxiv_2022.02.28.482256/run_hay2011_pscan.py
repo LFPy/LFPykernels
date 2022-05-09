@@ -39,7 +39,7 @@ PS1 = ParameterSpace(
                                     'frozen']),
             i_syn=ParameterRange([True]),
             n_ext=ParameterRange([[920, 160]]),
-            g_eff=ParameterRange([False, True])
+            g_eff=ParameterRange([False, True]),
             perseg_Vrest=ParameterRange([False])
         )
     )
@@ -61,7 +61,7 @@ PS2 = ParameterSpace(
             n_ext=ParameterRange([[920, 160]]),
             t_E=ParameterRange([200.]),
             t_I=ParameterRange([400.]),
-            g_eff=ParameterRange([True])
+            g_eff=ParameterRange([True]),
             perseg_Vrest=ParameterRange([False])
         )
     )
