@@ -522,16 +522,16 @@ class KernelApprox(object):
                 # modify synapse parameters to account for current-based
                 # synapses linearized around Vrest
                 d = self.synapseParameters[iii].copy()
-                if type(Vrest) is list:
-                    w = [- d['weight'] * (Vr - d['e']) for Vr in Vrest]
-                else:
+                if isinstance(Vrest, float):
                     w = [- d['weight'] * (Vrest - d['e'])] * cell.totnsegs
                     # d['weight'] = - d['weight'] * (Vrest - d['e'])
+                else:
+                    w = [- d['weight'] * (Vr - d['e']) for Vr in Vrest]
                 del d['e']  # no longer needed
                 d['syntype'] = d['syntype'] + 'I'
 
-                # create synapses activated by spike time of presynaptic
-                # population X
+                # create current synapses activated by spike time of
+                # presynaptic population X
                 # setting weight scaled by synapses per compartment
                 for idx, w_idx  in enumerate(w):
                     di = d.copy()
