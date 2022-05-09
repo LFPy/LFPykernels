@@ -221,7 +221,7 @@ if 'HOSTNAME' in os.environ.keys():
 
             # figure out job dependency:
             pset_0 = pset.copy()
-            for key in ['biophys', 'i_syn', 'g_eff']:
+            for key in ['biophys', 'i_syn', 'g_eff', 'perseg_Vrest']:
                 del pset_0[key]
             md5_0 = hashlib.md5(
                 json.dumps(
@@ -312,7 +312,7 @@ if 'HOSTNAME' in os.environ.keys():
 
             # figure out job dependency:
             pset_0 = pset.copy()
-            for key in ['biophys', 't_E', 't_I', 'g_eff']:
+            for key in ['biophys', 't_E', 't_I', 'g_eff', 'perseg_Vrest']:
                 del pset_0[key]
             md5_0 = hashlib.md5(
                 json.dumps(
