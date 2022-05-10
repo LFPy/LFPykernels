@@ -136,10 +136,10 @@ if __name__ == '__main__':
     # Parameters dependent on command line input
     ##########################################################################
     # scale connection weights
-    weight_EE *= weight_scaling
-    weight_IE *= weight_scaling
-    weight_EI *= weight_scaling
-    weight_II *= weight_scaling
+    weight_EE *= weight_scaling**(weight_EI / weight_EE)
+    weight_IE *= weight_scaling**(weight_II / weight_IE)
+    weight_EI *= weight_scaling**(weight_EE / weight_EI)
+    weight_II *= weight_scaling**(weight_IE / weight_II)
 
     # synapse max. conductance (function, mean, st.dev., min.):
     weightArguments = [[dict(loc=weight_EE, scale=weight_EE / 10),
