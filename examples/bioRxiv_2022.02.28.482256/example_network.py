@@ -135,7 +135,6 @@ if __name__ == '__main__':
     ##########################################################################
     # Parameters dependent on command line input
     ##########################################################################
-
     # scale connection weights
     weight_EE *= weight_scaling**(weight_EI / weight_EE)
     weight_IE *= weight_scaling**(weight_II / weight_IE)
