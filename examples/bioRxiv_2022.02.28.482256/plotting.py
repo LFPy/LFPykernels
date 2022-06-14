@@ -32,6 +32,7 @@ rcParams = {
     'axes.labelpad': 0,
     'legend.borderpad': 0.1,
     'legend.labelspacing': 0.1,
+    'legend.framealpha': 1,
 }
 
 golden_ratio = (1 + np.sqrt(5)) / 2
