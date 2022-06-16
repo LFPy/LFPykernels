@@ -97,6 +97,7 @@ if singularity:
     singularity_stuff = [
         'module --force purge\nmodule load Stages/2022  GCCcore/.11.2.0 Apptainer-Tools/2022',
         'singularity exec lfpykernels.sif'
+        ]
 else:
     singularity_stuff = [None, None]
 
@@ -170,7 +171,7 @@ if 'HOSTNAME' in os.environ.keys():
                     LNODES,
                     NTASKS,
                     singularity_stuff[0], 
-                    singularity_stuff[1]
+                    singularity_stuff[1],
                     md5
                 ))
             cmd = ' '.join(['sbatch',
@@ -252,7 +253,7 @@ if 'HOSTNAME' in os.environ.keys():
                     LNODES,
                     NTASKS,
                     singularity_stuff[0], 
-                    singularity_stuff[1]
+                    singularity_stuff[1],
                     md5
                 ))
 
@@ -346,7 +347,7 @@ if 'HOSTNAME' in os.environ.keys():
                     LNODES,
                     NTASKS,
                     singularity_stuff[0], 
-                    singularity_stuff[1]
+                    singularity_stuff[1],
                     md5
                 ))
 
