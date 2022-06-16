@@ -29,7 +29,6 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-    
 # fix some executable names
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && \
     update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10 && \
@@ -37,11 +36,7 @@ RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && 
 
 # install mpi4py and h5py (deb packages may depend on libopenmpi which we do not want)
 RUN pip install mpi4py==3.1.3 && \
-    pip install h5py==3.7.0  # 2.10.0
-
-# install matplotlib to a newer versions
-# RUN pip install matplotlib==3.5.2
-
+    pip install h5py==3.7.0
 
 # Install NEST 3.3
 RUN git clone --depth 1 -b v3.3 https://github.com/nest/nest-simulator /usr/src/nest-simulator && \
@@ -66,10 +61,8 @@ RUN rm -r nest-build
 # Add NEST binary folder to PATH
 RUN echo "source /opt/nest/bin/nest_vars.sh" >> root/.bashrc
 
-
 # ---- install NESTML -----
 RUN pip install git+https://github.com/nest/nestml.git@a3a1b0d9fdb26e53aae45d8520c1f5b7dc97eaa3#egg=nestml
-
 
 # ---- install NEURON ----
 RUN git clone --depth 1 -b 8.0.2 https://github.com/neuronsimulator/nrn.git /usr/src/nrn
@@ -100,7 +93,6 @@ RUN rm -r nrn-bld
 RUN pip install pymoo==0.4.2.2
 RUN pip install git+https://github.com/NeuralEnsemble/parameters@b95bac2bd17f03ce600541e435e270a1e1c5a478#egg=parameters
 
-
 # ---- install LFPykernels (main branch) -----
 # RUN pip install git+https://github.com/LFPy/LFPykernels@29d3fcb40101c0bedca775a2985893de312488ad#egg=lfpykernels
 RUN pip install LFPy==2.2.6
@@ -111,5 +103,7 @@ RUN pip install jupyterlab==3.4.3
 
 # If running with Singularity, run the below line in the host.
 # PYTHONPATH set here doesn't carry over:
-# export SINGULARITYENV_PYTHONPATH=/opt/nest/lib/python3.10/site-packages
+# export SINGULARITYENV_PYTHONPATH=/opt/nest/lib/python3.10/site-packages:/opt/nrn/lib/python:$PYTHONPATH
 # Alternatively, run "source /opt/local/bin/nest_vars.sh" while running the container
+# Update PATH as well?
+# export SINGULARITYENV_PATH=/opt/nrn/bin:$PATH
