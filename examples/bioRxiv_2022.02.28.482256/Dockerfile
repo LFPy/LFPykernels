@@ -18,16 +18,17 @@ RUN apt-get update && \
     python3-astropy=4.0-4ubuntu1 \
     python3-yaml=5.3.1-1ubuntu0.1 \
     python3-sympy=1.5.1-2.1 \
-    antlr4=4.7.2-2 \
     ipython3=7.13.0-1 \
     jupyter=4.6.3-3 \
     jupyter-notebook=6.0.3-2 \
+    antlr4=4.7.2-2 \
     libhdf5-dev=1.10.4+repack-11ubuntu1 \
     bison=2:3.5.1+dfsg-1 \
     flex=2.6.4-6.2 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+    
 
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && \
     update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10 && \
@@ -35,14 +36,15 @@ RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && 
 
 
 # install mpi4py and h5py (the deb packages may depend on libopenmpi which we do not want)
-RUN pip install mpi4py==3.0.3 && \
-    pip install h5py==2.10.0
+RUN pip install mpi4py==3.1.3 && \
+    pip install h5py==3.7.0  # 2.10.0
 
 # install matplotlib to a newer versions
-RUN pip install matplotlib==3.4.3
+RUN pip install matplotlib==3.5.2
 
-# Install NEST 3.1
-RUN git clone --depth 1 -b v3.1 https://github.com/nest/nest-simulator /usr/src/nest-simulator && \
+
+# Install NEST 3.3
+RUN git clone --depth 1 -b v3.3 https://github.com/nest/nest-simulator /usr/src/nest-simulator && \
   mkdir nest-build && \
   cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/nest/ \
         -Dwith-boost=ON \
@@ -70,7 +72,7 @@ RUN pip install git+https://github.com/nest/nestml.git@a3a1b0d9fdb26e53aae45d852
 
 
 # ---- install NEURON ----
-RUN git clone --depth 1 -b 8.0.0 https://github.com/neuronsimulator/nrn.git /usr/src/nrn
+RUN git clone --depth 1 -b 8.0.2 https://github.com/neuronsimulator/nrn.git /usr/src/nrn
 RUN mkdir nrn-bld
 
 RUN cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/nrn/ \
@@ -87,6 +89,9 @@ RUN cmake --build nrn-bld --parallel 4 --target install
 # add nrnpython to PYTHONPATH
 ENV PYTHONPATH /opt/nrn/lib/python:${PYTHONPATH}
 
+# add NEURON binaries to PATH
+ENV PATH /opt/nrn/bin:${PATH}
+
 # clean up
 RUN rm -r /usr/src/nrn
 RUN rm -r nrn-bld
@@ -97,7 +102,9 @@ RUN pip install git+https://github.com/NeuralEnsemble/parameters@b95bac2bd17f03c
 
 
 # ---- install LFPykernels (main branch) -----
-RUN pip install git+https://github.com/LFPy/LFPykernels@29d3fcb40101c0bedca775a2985893de312488ad#egg=lfpykernels
+# RUN pip install git+https://github.com/LFPy/LFPykernels@29d3fcb40101c0bedca775a2985893de312488ad#egg=lfpykernels
+RUN pip install LFPy==2.2.6
+RUN pip install git+https://github.com/LFPy/LFPykernels@revision#egg=lfpykernels
 
 
 # If running with Singularity, run the below line in the host.
