@@ -1,46 +1,46 @@
-FROM buildpack-deps:focal
+FROM buildpack-deps:jammy
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
-    cmake=3.16.3-1ubuntu1 \
-    libmpich-dev=3.3.2-2build1 \
-    mpich=3.3.2-2build1 \
-    doxygen=1.8.17-0ubuntu2 \
-    libboost-dev=1.71.0.0ubuntu2 \
-    libgsl-dev=2.5+dfsg-6build1 \
-    fonts-humor-sans=1.0-3 \
-    cython3=0.29.14-0.1ubuntu3 \
-    python3-dev=3.8.2-0ubuntu2 \
-    python3-pip=20.0.2-5ubuntu1.6 \
-    python3-scipy=1.3.3-3build1 \
-    python3-pandas=0.25.3+dfsg-7 \
-    python3-seaborn=0.10.0-1 \
-    python3-astropy=4.0-4ubuntu1 \
-    python3-yaml=5.3.1-1ubuntu0.1 \
-    python3-sympy=1.5.1-2.1 \
-    ipython3=7.13.0-1 \
-    jupyter=4.6.3-3 \
-    jupyter-notebook=6.0.3-2 \
-    antlr4=4.7.2-2 \
-    libhdf5-dev=1.10.4+repack-11ubuntu1 \
-    bison=2:3.5.1+dfsg-1 \
-    flex=2.6.4-6.2 \
+    cmake=3.22.1-1ubuntu1 \
+    libmpich-dev=4.0-3 \
+    mpich=4.0-3 \
+    doxygen=1.9.1-2ubuntu2 \
+    libboost-dev=1.74.0.3ubuntu7 \
+    libgsl-dev=2.7.1+dfsg-3 \
+    fonts-humor-sans=1.0-4 \
+    cython3=0.29.28-1ubuntu3 \
+    python3-dev=3.10.4-0ubuntu2 \
+    python3-pip=22.0.2+dfsg-1 \
+    python3-scipy=1.8.0-1exp2ubuntu1 \
+    python3-pandas=1.3.5+dfsg-3 \
+    python3-seaborn=0.11.2-3 \
+    python3-astropy=5.0.2-1 \
+    python3-yaml=5.4.1-1ubuntu1 \
+    python3-sympy=1.9-1 \
+    python3-matplotlib=3.5.1-2build1 \
+    ipython3=7.31.1-1 \
+    jupyter=4.9.1-1 \
+    jupyter-notebook=6.4.8-1 \
+    antlr4=4.7.2-5 \
+    libhdf5-dev=1.10.7+repack-4ubuntu2 \
+    bison=2:3.8.2+dfsg-1build1 \
+    flex=2.6.4-8build2 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
     
-
+# fix some executable names
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && \
     update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10 && \
     update-alternatives --install /usr/bin/ipython ipython /usr/bin/ipython3 10
 
-
-# install mpi4py and h5py (the deb packages may depend on libopenmpi which we do not want)
+# install mpi4py and h5py (deb packages may depend on libopenmpi which we do not want)
 RUN pip install mpi4py==3.1.3 && \
     pip install h5py==3.7.0  # 2.10.0
 
 # install matplotlib to a newer versions
-RUN pip install matplotlib==3.5.2
+# RUN pip install matplotlib==3.5.2
 
 
 # Install NEST 3.3
@@ -68,7 +68,7 @@ RUN echo "source /opt/nest/bin/nest_vars.sh" >> root/.bashrc
 
 
 # ---- install NESTML -----
-RUN pip install git+https://github.com/nest/nestml.git@a3a1b0d9fdb26e53aae45d8520c1f5b7dc97eaa3#egg=pynestml
+RUN pip install git+https://github.com/nest/nestml.git@a3a1b0d9fdb26e53aae45d8520c1f5b7dc97eaa3#egg=nestml
 
 
 # ---- install NEURON ----
@@ -106,8 +106,10 @@ RUN pip install git+https://github.com/NeuralEnsemble/parameters@b95bac2bd17f03c
 RUN pip install LFPy==2.2.6
 RUN pip install git+https://github.com/LFPy/LFPykernels@revision#egg=lfpykernels
 
+# install jupyter-lab
+RUN pip install jupyterlab==3.4.3
 
 # If running with Singularity, run the below line in the host.
 # PYTHONPATH set here doesn't carry over:
-# export SINGULARITYENV_PYTHONPATH=/opt/nest/lib/python3.8/site-packages
+# export SINGULARITYENV_PYTHONPATH=/opt/nest/lib/python3.10/site-packages
 # Alternatively, run "source /opt/local/bin/nest_vars.sh" while running the container
