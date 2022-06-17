@@ -70,6 +70,37 @@ PS2 = ParameterSpace(
 PS2.save('hay2011_PS2.txt')
 
 
+##############
+# Singularity prompt
+###############
+i = 0
+while i < 2:
+    answer = input('Run jobs using Singularity container "singularity.sif" built from Dockerfile (see README)? Y/n:')
+    if any(answer.lower() == f for f in ["y", 'Y', '1']):
+        print("Yes")
+        singularity = True
+        break
+    elif any(answer.lower() == f for f in ['N', 'n', '0']):
+        print("No")
+        singularity = False
+        break
+    else:
+        i += 1
+        if i < 2:
+            print('Please type "Y" or "n"')
+        else:
+            print("Nothing done")
+            singularity = False
+
+if singularity:
+    singularity_stuff = [
+        'module --force purge\nmodule load Stages/2022  GCCcore/.11.2.0 Apptainer-Tools/2022',
+        'singularity exec lfpykernels.sif'
+        ]
+else:
+    singularity_stuff = [None, None]
+
+
 ########
 # PS0
 #######
@@ -109,7 +140,8 @@ job = """#!/bin/bash
 ##################################################################
 # from here on we can run whatever command we want
 unset DISPLAY # DISPLAY somehow problematic with Slurm
-srun --mpi=pmi2 python -u hay2011_network.py {}
+{}
+srun --mpi=pmi2 {} python -u hay2011_network.py {}
 """
 
 if 'HOSTNAME' in os.environ.keys():
@@ -136,6 +168,8 @@ if 'HOSTNAME' in os.environ.keys():
                     md5,
                     LNODES,
                     NTASKS,
+                    singularity_stuff[0], 
+                    singularity_stuff[1],
                     md5
                 ))
             cmd = ' '.join(['sbatch',
@@ -179,7 +213,8 @@ job = """#!/bin/bash
 #SBATCH --ntasks {}
 ##################################################################
 unset DISPLAY # DISPLAY somehow problematic with Slurm
-srun --mpi=pmi2 python -u hay2011_network_reconstruction.py {}
+{}
+srun --mpi=pmi2 {} python -u hay2011_network_reconstruction.py {}
 """
 
 # estimate run times
@@ -212,6 +247,8 @@ if 'HOSTNAME' in os.environ.keys():
                     md5,
                     LNODES,
                     NTASKS,
+                    singularity_stuff[0], 
+                    singularity_stuff[1],
                     md5
                 ))
 
@@ -264,7 +301,8 @@ job = """#!/bin/bash
 #SBATCH --ntasks {}
 ##################################################################
 unset DISPLAY # DISPLAY somehow problematic with Slurm
-srun --mpi=pmi2 python -u hay2011_network_kernel.py {}
+{}
+srun --mpi=pmi2 {} python -u hay2011_network_kernel.py {}
 """
 
 # estimate run times
@@ -296,6 +334,8 @@ if 'HOSTNAME' in os.environ.keys():
                     md5,
                     LNODES,
                     NTASKS,
+                    singularity_stuff[0], 
+                    singularity_stuff[1],
                     md5
                 ))
 
