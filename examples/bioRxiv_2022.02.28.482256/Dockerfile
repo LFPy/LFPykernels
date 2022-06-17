@@ -3,10 +3,10 @@ FROM buildpack-deps:jammy
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
     cmake=3.22.1-1ubuntu1 \
-    # libmpich-dev=4.0-3 \
-    # mpich=4.0-3 \
-    libopenmpi-dev=4.1.2-2ubuntu1 \
-    openmpi-bin=4.1.2-2ubuntu1 \
+    libmpich-dev=4.0-3 \
+    mpich=4.0-3 \
+    # libopenmpi-dev=4.1.2-2ubuntu1 \
+    # openmpi-bin=4.1.2-2ubuntu1 \
     # libopenmpi3=4.1.2-2ubuntu1 \
     # gfortran=4:11.2.0-1ubuntu1 \
     doxygen=1.9.1-2ubuntu2 \
@@ -23,8 +23,8 @@ RUN apt-get update && \
     python3-yaml=5.4.1-1ubuntu1 \
     python3-sympy=1.9-1 \
     python3-matplotlib=3.5.1-2build1 \
-    python3-mpi4py=3.1.3-1build2 \
-    python3-h5py=3.6.0-2build1 \
+    # python3-mpi4py=3.1.3-1build2 \
+    # python3-h5py=3.6.0-2build1 \
     # python3-mpi4py \
     ipython3=7.31.1-1 \
     jupyter=4.9.1-1 \
@@ -43,8 +43,8 @@ RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && 
     update-alternatives --install /usr/bin/ipython ipython /usr/bin/ipython3 10
 
 # install mpi4py and h5py (deb packages may depend on libopenmpi which we do not want)
-# RUN pip --no-cache-dir install --no-deps mpi4py==3.1.3 && \
-#     pip --no-cache-dir install --no-deps h5py==3.7.0
+RUN pip --no-cache-dir install --no-deps mpi4py==3.1.3 && \
+    pip --no-cache-dir install --no-deps h5py==3.7.0
 # RUN pip --no-cache-dir install --no-deps h5py==3.7.0
 
 # Install NEST 3.3
