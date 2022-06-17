@@ -76,7 +76,7 @@ PS2.save('PS2.txt')
 ###############
 i = 0
 while i < 2:
-    answer = input('Run jobs using Singularity containers (see README)? Y/n:')
+    answer = input('Run jobs using Singularity container "singularity.sif" built from Dockerfile (see README)? Y/n:')
     if any(answer.lower() == f for f in ["y", 'Y', '1']):
         print("Yes")
         singularity = True
@@ -94,8 +94,9 @@ while i < 2:
             singularity = False
 
 if singularity:
+    # ParaStationMPI/5.5.0-1
     singularity_stuff = [
-        'module --force purge\nmodule load Stages/2022  GCCcore/.11.2.0 Apptainer-Tools/2022',
+        'module --force purge\nmodule load Stages/2022  GCCcore/.11.2.0 Apptainer-Tools/2022 GCC/11.2.0 OpenMPI/4.1.2',
         'singularity exec lfpykernels.sif'
         ]
 else:

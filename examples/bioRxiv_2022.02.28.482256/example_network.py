@@ -268,7 +268,10 @@ if __name__ == '__main__':
     for i, name in enumerate(params.population_names):
         for j, cell in enumerate(network.populations[name].cells):
             if j == 0:
-                somavs_pop = cell.somav
+                somavs_pop = ss.decimate(cell.somav, 
+                                         q=int(round(1 // network.dt)),
+                                         axis=-1,
+                                         zero_phase=True)
             # else:
             #     somavs_pop = np.vstack((somavs_pop, cell.somav))
         if RANK == 0:
@@ -283,11 +286,7 @@ if __name__ == '__main__':
     if RANK == 0:
         with h5py.File(os.path.join(OUTPUTPATH, 'somav.h5'), 'w') as f:
             for i, name in enumerate(params.population_names):
-                # f[name] = somavs[i]
-                f[name] = ss.decimate(somavs[i],
-                                      q=int(round(1 // network.dt)),
-                                      axis=-1,
-                                      zero_phase=True)
+                f[name] = somavs[i]
 
     # store lfpykit probe data to file
     if RANK == 0:
@@ -349,12 +348,12 @@ if __name__ == '__main__':
         gs = GridSpec(4, 1)
         ax = fig.add_subplot(gs[:2])
         if len(somavs[0] > 8):
-            data = ss.decimate(somavs[0][:8], q=16, axis=-1, zero_phase=True)
+            data = somavs[0][:8]
         else:
-            data = ss.decimate(somavs[0], q=16, axis=-1, zero_phase=True),
+            data = somavs[0],
         draw_lineplot(ax,
                       data,
-                      dt=network.dt * 16,
+                      dt=network.dt * int(round(1 // network.dt)),
                       T=(500, 1000),
                       scaling_factor=1.,
                       vlimround=16,
@@ -373,12 +372,12 @@ if __name__ == '__main__':
 
         ax = fig.add_subplot(gs[2:])
         if len(somavs[1] > 8):
-            data = ss.decimate(somavs[1][:8], q=16, axis=-1, zero_phase=True)
+            data = somavs[1][:8]
         else:
-            data = ss.decimate(somavs[1], q=16, axis=-1, zero_phase=True),
+            data = somavs[1],
         draw_lineplot(ax,
                       data,
-                      dt=network.dt * 16,
+                      dt=network.dt * int(round(1 // network.dt)),
                       T=(500, 1000),
                       scaling_factor=1.,
                       vlimround=16,
