@@ -50,7 +50,7 @@ RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && 
 # Install NEST 3.3
 RUN git clone --depth 1 -b v3.3 https://github.com/nest/nest-simulator /usr/src/nest-simulator && \
   mkdir nest-build && \
-  cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/nest/ \
+  cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/ \
         -Dwith-boost=ON \
         -Dwith-ltdl=ON \
         -Dwith-gsl=ON \
@@ -68,7 +68,7 @@ RUN rm -r /usr/src/nest-simulator
 RUN rm -r nest-build
 
 # Add NEST binary folder to PATH
-RUN echo "source /opt/nest/bin/nest_vars.sh" >> root/.bashrc
+RUN echo "source /usr/local/bin/nest_vars.sh" >> root/.bashrc
 
 # ---- install NESTML -----
 RUN pip install git+https://github.com/nest/nestml.git@a3a1b0d9fdb26e53aae45d8520c1f5b7dc97eaa3#egg=nestml
@@ -77,22 +77,23 @@ RUN pip install git+https://github.com/nest/nestml.git@a3a1b0d9fdb26e53aae45d852
 RUN git clone --depth 1 -b 8.0.2 https://github.com/neuronsimulator/nrn.git /usr/src/nrn
 RUN mkdir nrn-bld
 
-RUN cmake -DCMAKE_INSTALL_PREFIX:PATH=/opt/nrn/ \
+RUN cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr/local/ \
   -DCURSES_NEED_NCURSES=ON \
   -DNRN_ENABLE_INTERVIEWS=OFF \
   -DNRN_ENABLE_MPI=ON \
   -DNRN_ENABLE_RX3D=OFF \
   -DNRN_ENABLE_PYTHON=ON \
+  -DNRN_MODULE_INSTALL_OPTIONS="" \
   -S /usr/src/nrn \
   -B nrn-bld
 
 RUN cmake --build nrn-bld --parallel 4 --target install
 
 # add nrnpython to PYTHONPATH
-ENV PYTHONPATH /opt/nrn/lib/python:${PYTHONPATH}
+# ENV PYTHONPATH /opt/nrn/lib/python:${PYTHONPATH}
 
 # add NEURON binaries to PATH
-ENV PATH /opt/nrn/bin:${PATH}
+# ENV PATH /opt/nrn/bin:${PATH}
 
 # clean up
 RUN rm -r /usr/src/nrn
@@ -114,7 +115,7 @@ RUN pip --no-cache-dir install jupyterlab==3.4.3
 
 # If running with Singularity, run the below line in the host.
 # PYTHONPATH set here doesn't carry over:
-# export SINGULARITYENV_PYTHONPATH=/opt/nest/lib/python3.10/site-packages:/opt/nrn/lib/python:$PYTHONPATH
+# export APPTAINERENV_PYTHONPATH=/opt/nest/lib/python3.10/site-packages:/opt/nrn/lib/python:$PYTHONPATH
 # Alternatively, run "source /opt/local/bin/nest_vars.sh" while running the container
 # Update PATH as well?
-# export SINGULARITYENV_PATH=/opt/nrn/bin:$PATH
+# export APPTAINERENV_PATH=/opt/nrn/bin:$PATH
