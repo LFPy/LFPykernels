@@ -3,8 +3,12 @@ FROM buildpack-deps:jammy
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
     cmake=3.22.1-1ubuntu1 \
-    libmpich-dev=4.0-3 \
-    mpich=4.0-3 \
+    # libmpich-dev=4.0-3 \
+    # mpich=4.0-3 \
+    libopenmpi-dev=4.1.2-2ubuntu1 \
+    openmpi-bin=4.1.2-2ubuntu1 \
+    # libopenmpi3=4.1.2-2ubuntu1 \
+    # gfortran=4:11.2.0-1ubuntu1 \
     doxygen=1.9.1-2ubuntu2 \
     libboost-dev=1.74.0.3ubuntu7 \
     libgsl-dev=2.7.1+dfsg-3 \
@@ -19,6 +23,9 @@ RUN apt-get update && \
     python3-yaml=5.4.1-1ubuntu1 \
     python3-sympy=1.9-1 \
     python3-matplotlib=3.5.1-2build1 \
+    python3-mpi4py=3.1.3-1build2 \
+    python3-h5py=3.6.0-2build1 \
+    # python3-mpi4py \
     ipython3=7.31.1-1 \
     jupyter=4.9.1-1 \
     jupyter-notebook=6.4.8-1 \
@@ -29,14 +36,16 @@ RUN apt-get update && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+
 # fix some executable names
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 10 && \
     update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 10 && \
     update-alternatives --install /usr/bin/ipython ipython /usr/bin/ipython3 10
 
 # install mpi4py and h5py (deb packages may depend on libopenmpi which we do not want)
-RUN pip install mpi4py==3.1.3 && \
-    pip install h5py==3.7.0
+# RUN pip --no-cache-dir install --no-deps mpi4py==3.1.3 && \
+#     pip --no-cache-dir install --no-deps h5py==3.7.0
+# RUN pip --no-cache-dir install --no-deps h5py==3.7.0
 
 # Install NEST 3.3
 RUN git clone --depth 1 -b v3.3 https://github.com/nest/nest-simulator /usr/src/nest-simulator && \
@@ -90,16 +99,18 @@ RUN rm -r /usr/src/nrn
 RUN rm -r nrn-bld
 
 # ---- pip install some additional things
-RUN pip install pymoo==0.4.2.2
-RUN pip install git+https://github.com/NeuralEnsemble/parameters@b95bac2bd17f03ce600541e435e270a1e1c5a478#egg=parameters
+RUN pip --no-cache-dir install --no-deps pymoo==0.4.2.2
+RUN pip --no-cache-dir install --no-deps git+https://github.com/NeuralEnsemble/parameters@b95bac2bd17f03ce600541e435e270a1e1c5a478#egg=parameters
 
 # ---- install LFPykernels (main branch) -----
 # RUN pip install git+https://github.com/LFPy/LFPykernels@29d3fcb40101c0bedca775a2985893de312488ad#egg=lfpykernels
-RUN pip install LFPy==2.2.6
-RUN pip install git+https://github.com/LFPy/LFPykernels@revision#egg=lfpykernels
+RUN pip --no-cache-dir install --no-deps git+https://github.com//alejoe91/MEAutility.git@1.5.1#egg=MEAutility
+RUN pip --no-cache-dir install --no-deps git+https://github.com/LFPy/LFPykit.git@v0.4#egg=lfpykit
+RUN pip --no-cache-dir install --no-deps git+https://github.com/LFPy/LFPy.git@v2.2.6#egg=LFPy
+RUN pip --no-cache-dir install --no-deps git+https://github.com/LFPy/LFPykernels@revision#egg=lfpykernels
 
 # install jupyter-lab
-RUN pip install jupyterlab==3.4.3
+RUN pip --no-cache-dir install jupyterlab==3.4.3
 
 # If running with Singularity, run the below line in the host.
 # PYTHONPATH set here doesn't carry over:
