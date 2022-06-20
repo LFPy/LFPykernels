@@ -138,6 +138,32 @@ Make sure the Docker client is running on the host. Then:
     # run a simulation with MPI, assuming we have access to 1024 physical CPU cores (also make sure that parameter files have been created by an earlier call to `python run_pscan.py`)
     /# mpiexec -n 1024 python example_network.py c8a7f7ed6495c9fc60060f31d788208f
 
+## Singularity
+
+Singularity things (see https://apps.fz-juelich.de/jsc/hps/jusuf/cluster/container-runtime.html):
+
+Build singularity container `lfpykernels.sif` using the JSC build system:
+
+    module --force purge
+    module load Stages/2022 GCCcore/.11.2.0 Apptainer-Tools/2022 GCC/11.2.0 ParaStationMPI/5.5.0-1
+    sib upload ./Dockerfile lfpykernels
+    sib build --recipe-name lfpykernels --blocking  # this will take a few minutes
+    sib download --recipe-name lfpykernels
+
+
+Compile NMODL files using the `nrnivmodl` script included in the container:
+
+    cd mod && rm -rf x86_64 && singularity exec ../lfpykernels.sif nrnivmodl && cd ..  # compile NMODL files for the container
+    srun --mpi=pmi2 singularity exec lfpykernels.sif python3 -u example_network.py 72d90a2e763ba9c3a9d85a4a715ec04c
+
+
+Make sure that jobscripts are configured for singularity, calling the built-in python executable:
+    unset DISPLAY  # matplotlib may look for a nonexistant display on compute node(s)
+    module --force purge
+    module load Stages/2022  GCCcore/.11.2.0 Apptainer-Tools/2022 GCC/11.2.0 ParaStationMPI/5.5.0-1
+    srun --mpi=pmi2 singularity exec lfpykernels.sif python3 -u example_network.py adb947bfb931a5a8d09ad078a6d256b0  # execute simulation
+
+
 
 ## Files
 
