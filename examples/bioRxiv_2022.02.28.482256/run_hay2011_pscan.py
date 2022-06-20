@@ -94,7 +94,7 @@ while i < 2:
 
 if singularity:
     singularity_stuff = [
-        'module --force purge\nmodule load Stages/2022  GCCcore/.11.2.0 Apptainer-Tools/2022 GCC/11.2.0 ParaStationMPI/5.5.0-1',
+        'module --force purge\nmodule load Stages/2022 GCCcore/.11.2.0 Apptainer-Tools/2022 GCC/11.2.0 ParaStationMPI/5.5.0-1',
         'singularity exec lfpykernels.sif'
         ]
 else:
