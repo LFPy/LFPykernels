@@ -75,7 +75,7 @@ PS2.save('hay2011_PS2.txt')
 ###############
 i = 0
 while i < 2:
-    answer = input('Run jobs using Singularity container "singularity.sif" built from Dockerfile (see README)? Y/n:')
+    answer = input('Run jobs using Singularity container "singularity.sif" built from Dockerfile (see README)? y/N: ')
     if any(answer.lower() == f for f in ["y", 'Y', '1']):
         print("Yes")
         singularity = True
@@ -171,7 +171,7 @@ if 'HOSTNAME' in os.environ.keys():
                     singularity_stuff[0], 
                     singularity_stuff[1],
                     md5
-                ))
+                ).replace('None', ''))
             cmd = ' '.join(['sbatch',
                             '{}'.format(os.path.join('jobs',
                                         '{}.job'.format(md5)))])
@@ -250,7 +250,7 @@ if 'HOSTNAME' in os.environ.keys():
                     singularity_stuff[0], 
                     singularity_stuff[1],
                     md5
-                ))
+                ).replace('None', ''))
 
             # figure out job dependency:
             pset_0 = pset.copy()
@@ -337,7 +337,7 @@ if 'HOSTNAME' in os.environ.keys():
                     singularity_stuff[0], 
                     singularity_stuff[1],
                     md5
-                ))
+                ).replace('None', ''))
 
             # figure out job dependency:
             pset_0 = pset.copy()
