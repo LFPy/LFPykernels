@@ -25,7 +25,7 @@ rcParams = {
     'axes.ymargin': 0.01,
     'font.size': 14,
     'legend.fontsize': 12,
-    'axes.titlesize': 14,
+    'axes.titlesize': 15,
     'xtick.labelsize': 14,
     'ytick.labelsize': 14,
     'figure.dpi': 120.0,
