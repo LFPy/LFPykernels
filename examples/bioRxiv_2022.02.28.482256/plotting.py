@@ -33,6 +33,7 @@ rcParams = {
     'legend.borderpad': 0.1,
     'legend.labelspacing': 0.1,
     'legend.framealpha': 1,
+    # 'lines.linewidth': 2,
 }
 
 golden_ratio = (1 + np.sqrt(5)) / 2
@@ -86,11 +87,11 @@ def draw_lineplot(
 
     for i, z in enumerate(zvec):
         if i == 0:
-            ax.plot(tvec[tinds], data[i][tinds] / vlimround + z, lw=1,
+            ax.plot(tvec[tinds], data[i][tinds] / vlimround + z,
                     rasterized=False, label=label, clip_on=False,
                     color=color)
         else:
-            ax.plot(tvec[tinds], data[i][tinds] / vlimround + z, lw=1,
+            ax.plot(tvec[tinds], data[i][tinds] / vlimround + z,
                     rasterized=False, clip_on=False,
                     color=color)
         yticklabels.append('ch.%i' % (i + 1))
