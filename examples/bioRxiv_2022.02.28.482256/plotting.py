@@ -36,6 +36,18 @@ rcParams = {
     # 'lines.linewidth': 2,
 }
 
+senkcolors = np.array([
+    '#774411',   # L5E brown
+    '#DDAA77',   # L5I
+    '#771155',   # L6E pompadour
+    '#CC99BB',   # L6I
+    '#114477',   # L23E blue
+    '#77AADD',   # L23I
+    '#117744',   # L4E green
+    '#88CCAA',   # L4I
+    '#696969'])   # grayish
+
+
 golden_ratio = (1 + np.sqrt(5)) / 2
 figwidth = 14 # inches
 
