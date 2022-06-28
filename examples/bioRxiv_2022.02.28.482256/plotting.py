@@ -49,7 +49,8 @@ senkcolors = np.array([
 
 
 golden_ratio = (1 + np.sqrt(5)) / 2
-figwidth = 14 # inches
+figwidth = 14  # inches
+
 
 def remove_axis_junk(ax, lines=['right', 'top']):
     """remove chosen lines from plotting axis"""

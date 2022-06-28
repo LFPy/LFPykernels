@@ -75,7 +75,8 @@ PS2.save('hay2011_PS2.txt')
 ###############
 i = 0
 while i < 2:
-    answer = input('Run jobs using Singularity container "singularity.sif" built from Dockerfile (see README)? y/N: ')
+    answer = input(
+        'Run jobs using Singularity container "singularity.sif" built from Dockerfile (see README)? y/N: ')
     if any(answer.lower() == f for f in ["y", 'Y', '1']):
         print("Yes")
         singularity = True
@@ -95,8 +96,7 @@ while i < 2:
 if singularity:
     singularity_stuff = [
         'module --force purge\nmodule load Stages/2022 GCCcore/.11.2.0 Apptainer-Tools/2022 GCC/11.2.0 ParaStationMPI/5.5.0-1',
-        'singularity exec lfpykernels.sif'
-        ]
+        'singularity exec lfpykernels.sif']
 else:
     singularity_stuff = [None, None]
 
@@ -168,7 +168,7 @@ if 'HOSTNAME' in os.environ.keys():
                     md5,
                     LNODES,
                     NTASKS,
-                    singularity_stuff[0], 
+                    singularity_stuff[0],
                     singularity_stuff[1],
                     md5
                 ).replace('None', ''))
@@ -247,7 +247,7 @@ if 'HOSTNAME' in os.environ.keys():
                     md5,
                     LNODES,
                     NTASKS,
-                    singularity_stuff[0], 
+                    singularity_stuff[0],
                     singularity_stuff[1],
                     md5
                 ).replace('None', ''))
@@ -334,7 +334,7 @@ if 'HOSTNAME' in os.environ.keys():
                     md5,
                     LNODES,
                     NTASKS,
-                    singularity_stuff[0], 
+                    singularity_stuff[0],
                     singularity_stuff[1],
                     md5
                 ).replace('None', ''))

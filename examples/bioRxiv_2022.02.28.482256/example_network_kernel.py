@@ -252,7 +252,7 @@ if __name__ == '__main__':
                         seed=np.random.rand() * 2**32 - 1)
                     '''
                     _ = np.random.rand() * 2**32 - 1  # throw away to ensure
-                                                      # similar sequences
+                    # similar sequences
 
                     if i_syn & g_eff:
                         # compute and apply shift of seg.g_pas:

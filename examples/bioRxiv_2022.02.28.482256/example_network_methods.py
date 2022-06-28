@@ -307,7 +307,6 @@ def set_Ih_linearized_hay2011(cell, Vrest):
                 seg.ek = Vrest[i]  # -85
                 i += 1
 
-
         if sec.name().rfind('soma') >= 0:
             sec.gNaTa_tbar_NaTa_t_frozen = 2.04
             sec.gSKv3_1bar_SKv3_1_frozen = 0.693
@@ -517,6 +516,7 @@ def csd(x, y=None, Fs=16000, NFFT=256, noverlap=192, library='mpl', **kwargs):
     else:
         return S_xy, freqs
 
+
 def coherence(x, y, Fs=16000, NFFT=256, noverlap=192, library='mpl', **kwargs):
     '''Compute the coherence ``|P_xy|**2/(P_xx, P_yy)``` wrapping either
     ``plt.mlab.csd``/``plt.mlab.psd`` or ``scipy.signal.csd`` functions
@@ -608,7 +608,8 @@ def compute_nu_X(h5file, X, T=(0, 1000), Delta_t=1.):
         bin edges
     '''
     nu_X = {}
-    bins = np.linspace(T[0] - Delta_t / 2, T[1] + Delta_t / 2, int(np.diff(T) / Delta_t + 2))
+    bins = np.linspace(T[0] - Delta_t / 2, T[1] +
+                       Delta_t / 2, int(np.diff(T) / Delta_t + 2))
 
     with h5py.File(h5file, 'r') as f:
         for i, X_i in enumerate(X):

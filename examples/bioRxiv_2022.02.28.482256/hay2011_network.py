@@ -266,7 +266,7 @@ if __name__ == '__main__':
     for i, name in enumerate(params.population_names):
         for j, cell in enumerate(network.populations[name].cells):
             if j == 0:
-                somavs_pop = ss.decimate(cell.somav, 
+                somavs_pop = ss.decimate(cell.somav,
                                          q=int(round(1 // network.dt)),
                                          axis=-1,
                                          zero_phase=True)

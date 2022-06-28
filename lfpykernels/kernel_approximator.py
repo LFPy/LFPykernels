@@ -435,7 +435,7 @@ class KernelApprox(object):
 
         # check that if Vrest is a list that the length matches the number of
         # compartments
-        if type(Vrest) is list:
+        if isinstance(Vrest, list):
             mssg = f'len(Vrest) != cell.totnsegs = {cell.totnsegs}'
             assert len(Vrest) == cell.totnsegs, mssg
 
@@ -533,7 +533,7 @@ class KernelApprox(object):
                 # create current synapses activated by spike time of
                 # presynaptic population X
                 # setting weight scaled by synapses per compartment
-                for idx, w_idx  in enumerate(w):
+                for idx, w_idx in enumerate(w):
                     di = d.copy()
                     di['weight'] = w_idx * rho_YX_out[idx]
                     # di['weight'] = di['weight'] * rho_YX_out[idx]
