@@ -31,7 +31,7 @@ def set_active(cell, Vrest):
     cell: object
         LFPy.NetworkCell like object
     Vrest: float
-        Steady state potential
+        Steady state potential (ignored)
     """
     for sec in cell.template.all:
         sec.insert('hh')
@@ -179,20 +179,31 @@ def set_frozen_hay2011(cell, Vrest):
     ----------
     cell: object
         LFPy.NetworkCell like object
-    Vrest: float
-        Steady state potential
+    Vrest: float or list of float
+        Steady state potential. If list, set Vrest per segment
     """
+    i = 0
     for sec in cell.template.all:
         sec.insert('pas')
         sec.insert('NaTa_t_frozen')
         sec.insert('SKv3_1_frozen')
         sec.insert('Ih_linearized_v2_frozen')
-        sec.e_pas = Vrest
-        sec.V_R_NaTa_t_frozen = Vrest
-        sec.V_R_SKv3_1_frozen = Vrest
-        sec.V_R_Ih_linearized_v2_frozen = Vrest
-        sec.ena = Vrest  # 50
-        sec.ek = Vrest  # -85
+        if isinstance(Vrest, float):
+            sec.e_pas = Vrest
+            sec.V_R_NaTa_t_frozen = Vrest
+            sec.V_R_SKv3_1_frozen = Vrest
+            sec.V_R_Ih_linearized_v2_frozen = Vrest
+            sec.ena = Vrest  # 50
+            sec.ek = Vrest  # -85
+        else:
+            for seg in sec:
+                seg.e_pas = Vrest[i]
+                seg.V_R_NaTa_t_frozen = Vrest[i]
+                seg.V_R_SKv3_1_frozen = Vrest[i]
+                seg.V_R_Ih_linearized_v2_frozen = Vrest[i]
+                seg.ena = Vrest[i]  # 50
+                seg.ek = Vrest[i]  # -85
+            i += 1
         if sec.name().rfind('soma') >= 0:
             sec.gNaTa_tbar_NaTa_t_frozen = 2.04
             sec.gSKv3_1bar_SKv3_1_frozen = 0.693
@@ -270,20 +281,31 @@ def set_Ih_linearized_hay2011(cell, Vrest):
     ----------
     cell: object
         LFPy.NetworkCell like object
-    Vrest: float
-        Steady state potential
+    Vrest: float or list of float
+        Steady state potential. If list, set per segment
     """
+    i = 0
     for sec in cell.template.all:
         sec.insert('pas')
         sec.insert('NaTa_t_frozen')
         sec.insert('SKv3_1_frozen')
         sec.insert('Ih_linearized_v2')
-        sec.e_pas = Vrest
-        sec.V_R_Ih_linearized_v2 = Vrest
-        sec.V_R_NaTa_t_frozen = Vrest
-        sec.V_R_SKv3_1_frozen = Vrest
-        sec.ena = Vrest  # 50
-        sec.ek = Vrest  # -85
+        if isinstance(Vrest, float):
+            sec.e_pas = Vrest
+            sec.V_R_Ih_linearized_v2 = Vrest
+            sec.V_R_NaTa_t_frozen = Vrest
+            sec.V_R_SKv3_1_frozen = Vrest
+            sec.ena = Vrest  # 50
+            sec.ek = Vrest  # -85
+        else:
+            for seg in sec:
+                seg.e_pas = Vrest[i]
+                seg.V_R_Ih_linearized_v2 = Vrest[i]
+                seg.V_R_NaTa_t_frozen = Vrest[i]
+                seg.V_R_SKv3_1_frozen = Vrest[i]
+                seg.ena = Vrest[i]  # 50
+                seg.ek = Vrest[i]  # -85
+                i += 1
 
         if sec.name().rfind('soma') >= 0:
             sec.gNaTa_tbar_NaTa_t_frozen = 2.04
@@ -335,10 +357,16 @@ def set_V_R(cell, Vrest):
         "NaTa_t_frozen",
         "Im_frozen"
     ]
-    for sec in cell.template.all:
-        for ion in ion_channels:
+    for ion in ion_channels:
+        i = 0
+        for sec in cell.template.all:
             if neuron.h.ismembrane(ion, sec=sec):
-                setattr(sec, f'V_R_{ion}', Vrest)
+                if isinstance(Vrest, float):
+                    setattr(sec, f'V_R_{ion}', Vrest)
+                else:
+                    for seg in sec:
+                        setattr(seg, f'V_R_{ion}', Vrest[i])
+                        i += 1
 
 
 def make_cell_uniform(cell, Vrest=-65):
@@ -350,10 +378,14 @@ def make_cell_uniform(cell, Vrest=-65):
     cell: object
         LFPy.NetworkCell like object
     Vrest: float
-        Steady state potential
+        Steady state potential. If list of float; only the first element
+        will be used for cell initialization.
     """
     neuron.h.t = 0
-    neuron.h.finitialize(Vrest)
+    if isinstance(Vrest, float):
+        neuron.h.finitialize(Vrest)
+    else:
+        neuron.h.finitialize()
     neuron.h.fcurrent()
     for sec in cell.allseclist:
         for seg in sec:
@@ -434,6 +466,57 @@ def quant90(x):
     return np.quantile(x, 0.9)
 
 
+def csd(x, y=None, Fs=16000, NFFT=256, noverlap=192, library='mpl', **kwargs):
+    '''Compute and return the cross-spectral density (``S_xy(f)``) between
+    signals ``x`` and ``y``.
+
+    Parameters
+    ----------
+    x: ndarray
+        signal
+    y: ndarray
+        signal
+    Fs: float, default: 16000
+        The sampling frequency (samples per time unit).  It is used to
+        calculate
+        the Fourier frequencies, *freqs*, in cycles per time unit.
+    NFFT: int, default: 256
+        The number of data points used in each block for the FFT.  A power 2 is
+        most efficient.  This should *NOT* be used to get zero padding, or the
+        scaling of the result will be incorrect; use *pad_to* for this instead.
+    noverlap: int, default: 192 (no overlap)
+        The number of points of overlap between segments.
+    library: str
+        if ``library=='mpl'``, use matplotlib; if ``library=='scipy'``
+        use scipy
+    **kwargs:
+        additional arguments to the wrapped functions
+
+    Returns
+    -------
+    S_xy: ndarray
+        cross-spectral density
+    freqs: ndarray
+        frequencies
+    '''
+    if y is None:
+        y = x.copy()
+        auto = True
+    else:
+        auto = False
+    if library == 'mpl':
+        S_xy, freqs = mlab.csd(x, y, Fs=Fs, NFFT=NFFT, noverlap=noverlap,
+                               **kwargs)
+    elif library == 'scipy':
+        freqs, S_xy = ss.csd(x, y,
+                             fs=Fs, nfft=NFFT, nperseg=NFFT, noverlap=noverlap,
+                             **kwargs)
+    if auto:
+        return abs(S_xy), freqs
+    else:
+        return S_xy, freqs
+
+
 def coherence(x, y, Fs=16000, NFFT=256, noverlap=192, library='mpl', **kwargs):
     '''Compute the coherence ``|P_xy|**2/(P_xx, P_yy)``` wrapping either
     ``plt.mlab.csd``/``plt.mlab.psd`` or ``scipy.signal.csd`` functions
@@ -497,3 +580,47 @@ def zscore(x):
     '''
 
     return (x - x.mean()) / x.std()
+
+
+def compute_nu_X(h5file, X, T=(0, 1000), Delta_t=1.):
+    '''Compute the number of spikes per time bin using `np.histogram`.
+    This function defines bin edges that span
+    `[t_i - Delta_t / 2, t_i + Delta_t / 2]` for each time
+    `t_i = T[0] + i * Delta_t` for `i = 0, 1, ...`
+
+    Parameters
+    ----------
+    h5file: str
+        path to `spikes.h5` file
+    X: list of str
+        population names
+    T: tuple
+        lower and upper time limits (t_min, t_max)
+    Delta_t: float
+        bin size (ms)
+
+    Returns
+    -------
+    nu_X: dict
+        keys: X
+        values: ndarrays with
+    bin_edges: ndarray
+        bin edges
+    '''
+    nu_X = {}
+    bins = np.linspace(T[0] - Delta_t / 2, T[1] +
+                       Delta_t / 2, int(np.diff(T) / Delta_t + 2))
+
+    with h5py.File(h5file, 'r') as f:
+        for i, X_i in enumerate(X):
+            times = []
+
+            for g, t in zip(f[X_i]['gids'], f[X_i]['times']):
+                times = np.r_[times, t]
+
+            ii = (times >= T[0]) & (times <= T[1])
+
+            hist, bin_edges = np.histogram(times[ii], bins=bins)
+            nu_X[X_i] = hist
+
+    return nu_X, bin_edges

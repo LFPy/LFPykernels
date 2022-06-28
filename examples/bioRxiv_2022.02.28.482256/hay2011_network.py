@@ -136,10 +136,10 @@ if __name__ == '__main__':
     # Parameters dependent on command line input
     ##########################################################################
     # scale connection weights
-    weight_EE *= weight_scaling
-    weight_IE *= weight_scaling
-    weight_EI *= weight_scaling
-    weight_II *= weight_scaling
+    weight_EE *= weight_scaling**(weight_EI / weight_EE)
+    weight_IE *= weight_scaling**(weight_II / weight_IE)
+    weight_EI *= weight_scaling**(weight_EE / weight_EI)
+    weight_II *= weight_scaling**(weight_IE / weight_II)
 
     # synapse max. conductance (function, mean, st.dev., min.):
     weightArguments = [[dict(loc=weight_EE, scale=weight_EE / 10),
@@ -210,6 +210,10 @@ if __name__ == '__main__':
         with open(os.path.join(OUTPUTPATH, 'tic_tac.txt'), 'a') as f:
             f.write(f'connect {tac - tic}\n')
 
+    # record membrane voltages for 1st cell per population per MPI RANK
+    for name in params.population_names:
+        network.populations[name].cells[0]._set_voltage_recorders(1.)
+
     # set up extracellular recording device.
     # Here `cell` is set to None as handles to cell geometry is handled
     # internally
@@ -228,6 +232,10 @@ if __name__ == '__main__':
         probes=[electrode, current_dipole_moment, csd],
         **params.networkSimulationArguments
     )
+
+    # gather recorded membrane potentials
+    for name in params.population_names:
+        network.populations[name].cells[0]._collect_vmem()
 
     # tic tac
     tic = time()
@@ -258,7 +266,10 @@ if __name__ == '__main__':
     for i, name in enumerate(params.population_names):
         for j, cell in enumerate(network.populations[name].cells):
             if j == 0:
-                somavs_pop = cell.somav
+                somavs_pop = ss.decimate(cell.somav,
+                                         q=int(round(1 // network.dt)),
+                                         axis=-1,
+                                         zero_phase=True)
             # else:
             #     somavs_pop = np.vstack((somavs_pop, cell.somav))
         if RANK == 0:
@@ -273,11 +284,7 @@ if __name__ == '__main__':
     if RANK == 0:
         with h5py.File(os.path.join(OUTPUTPATH, 'somav.h5'), 'w') as f:
             for i, name in enumerate(params.population_names):
-                # f[name] = somavs[i]
-                f[name] = ss.decimate(somavs[i],
-                                      q=int(round(1 // network.dt)),
-                                      axis=-1,
-                                      zero_phase=True)
+                f[name] = somavs[i]
 
     # store lfpykit probe data to file
     if RANK == 0:
@@ -287,6 +294,21 @@ if __name__ == '__main__':
                              '{}.h5'.format(probe.__class__.__name__)), 'w'
             ) as f:
                 f['data'] = probe.data
+
+    # compute mean compartmental membrane voltages across cells and store
+    if RANK == 0:
+        with h5py.File(os.path.join(OUTPUTPATH, 'vmem.h5'), 'w') as f:
+            pass
+    for name in params.population_names:
+        sendbuf = network.populations[name].cells[0].vmem
+        if RANK == 0:
+            recvbuf = np.zeros(sendbuf.shape)
+        else:
+            recvbuf = None
+        COMM.Reduce(sendbuf, recvbuf, op=MPI.SUM, root=0)
+        if RANK == 0:
+            with h5py.File(os.path.join(OUTPUTPATH, 'vmem.h5'), 'a') as f:
+                f[name] = recvbuf / SIZE
 
     # tic tac
     tac = time()
@@ -324,12 +346,12 @@ if __name__ == '__main__':
         gs = GridSpec(4, 1)
         ax = fig.add_subplot(gs[:2])
         if len(somavs[0] > 8):
-            data = ss.decimate(somavs[0][:8], q=16, axis=-1, zero_phase=True)
+            data = somavs[0][:8]
         else:
-            data = ss.decimate(somavs[0], q=16, axis=-1, zero_phase=True),
+            data = somavs[0],
         draw_lineplot(ax,
                       data,
-                      dt=network.dt * 16,
+                      dt=network.dt * int(round(1 // network.dt)),
                       T=(500, 1000),
                       scaling_factor=1.,
                       vlimround=16,
@@ -348,12 +370,12 @@ if __name__ == '__main__':
 
         ax = fig.add_subplot(gs[2:])
         if len(somavs[1] > 8):
-            data = ss.decimate(somavs[1][:8], q=16, axis=-1, zero_phase=True)
+            data = somavs[1][:8]
         else:
-            data = ss.decimate(somavs[1], q=16, axis=-1, zero_phase=True),
+            data = somavs[1],
         draw_lineplot(ax,
                       data,
-                      dt=network.dt * 16,
+                      dt=network.dt * int(round(1 // network.dt)),
                       T=(500, 1000),
                       scaling_factor=1.,
                       vlimround=16,

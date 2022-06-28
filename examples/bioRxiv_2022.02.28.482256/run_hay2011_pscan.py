@@ -18,7 +18,7 @@ PS0 = ParameterSpace(
             weight_EI=ParameterRange([0.0045]),  # I onto E
             weight_II=ParameterRange([0.0020]),  # I onto I
             # linear scaling of all connection weights
-            weight_scaling=ParameterRange([1.]),
+            weight_scaling=ParameterRange([0.975, 1., 1.025, 1.050, 1.075]),
             n_ext=ParameterRange([[920, 160]]),
         )
     )
@@ -39,7 +39,8 @@ PS1 = ParameterSpace(
                                     'frozen']),
             i_syn=ParameterRange([True]),
             n_ext=ParameterRange([[920, 160]]),
-            g_eff=ParameterRange([False, True])
+            g_eff=ParameterRange([False, True]),
+            perseg_Vrest=ParameterRange([False])
         )
     )
 )
@@ -60,12 +61,44 @@ PS2 = ParameterSpace(
             n_ext=ParameterRange([[920, 160]]),
             t_E=ParameterRange([200.]),
             t_I=ParameterRange([400.]),
-            g_eff=ParameterRange([True])
+            g_eff=ParameterRange([True]),
+            perseg_Vrest=ParameterRange([False])
         )
     )
 )
 
 PS2.save('hay2011_PS2.txt')
+
+
+##############
+# Singularity prompt
+###############
+i = 0
+while i < 2:
+    answer = input(
+        'Run jobs using Singularity container "singularity.sif" built from Dockerfile (see README)? y/N: ')
+    if any(answer.lower() == f for f in ["y", 'Y', '1']):
+        print("Yes")
+        singularity = True
+        break
+    elif any(answer.lower() == f for f in ['N', 'n', '0']):
+        print("No")
+        singularity = False
+        break
+    else:
+        i += 1
+        if i < 2:
+            print('Please type "Y" or "n"')
+        else:
+            print("Nothing done")
+            singularity = False
+
+if singularity:
+    singularity_stuff = [
+        'module --force purge\nmodule load Stages/2022 GCCcore/.11.2.0 Apptainer-Tools/2022 GCC/11.2.0 ParaStationMPI/5.5.0-1',
+        'singularity exec lfpykernels.sif']
+else:
+    singularity_stuff = [None, None]
 
 
 ########
@@ -107,7 +140,8 @@ job = """#!/bin/bash
 ##################################################################
 # from here on we can run whatever command we want
 unset DISPLAY # DISPLAY somehow problematic with Slurm
-srun --mpi=pmi2 python -u hay2011_network.py {}
+{}
+srun --mpi=pmi2 {} python -u hay2011_network.py {}
 """
 
 if 'HOSTNAME' in os.environ.keys():
@@ -134,8 +168,10 @@ if 'HOSTNAME' in os.environ.keys():
                     md5,
                     LNODES,
                     NTASKS,
+                    singularity_stuff[0],
+                    singularity_stuff[1],
                     md5
-                ))
+                ).replace('None', ''))
             cmd = ' '.join(['sbatch',
                             '{}'.format(os.path.join('jobs',
                                         '{}.job'.format(md5)))])
@@ -177,7 +213,8 @@ job = """#!/bin/bash
 #SBATCH --ntasks {}
 ##################################################################
 unset DISPLAY # DISPLAY somehow problematic with Slurm
-srun --mpi=pmi2 python -u hay2011_network_reconstruction.py {}
+{}
+srun --mpi=pmi2 {} python -u hay2011_network_reconstruction.py {}
 """
 
 # estimate run times
@@ -210,12 +247,14 @@ if 'HOSTNAME' in os.environ.keys():
                     md5,
                     LNODES,
                     NTASKS,
+                    singularity_stuff[0],
+                    singularity_stuff[1],
                     md5
-                ))
+                ).replace('None', ''))
 
             # figure out job dependency:
             pset_0 = pset.copy()
-            for key in ['biophys', 'i_syn', 'g_eff']:
+            for key in ['biophys', 'i_syn', 'g_eff', 'perseg_Vrest']:
                 del pset_0[key]
             md5_0 = hashlib.md5(
                 json.dumps(
@@ -262,7 +301,8 @@ job = """#!/bin/bash
 #SBATCH --ntasks {}
 ##################################################################
 unset DISPLAY # DISPLAY somehow problematic with Slurm
-srun --mpi=pmi2 python -u hay2011_network_kernel.py {}
+{}
+srun --mpi=pmi2 {} python -u hay2011_network_kernel.py {}
 """
 
 # estimate run times
@@ -294,12 +334,14 @@ if 'HOSTNAME' in os.environ.keys():
                     md5,
                     LNODES,
                     NTASKS,
+                    singularity_stuff[0],
+                    singularity_stuff[1],
                     md5
-                ))
+                ).replace('None', ''))
 
             # figure out job dependency:
             pset_0 = pset.copy()
-            for key in ['biophys', 't_E', 't_I', 'g_eff']:
+            for key in ['biophys', 't_E', 't_I', 'g_eff', 'perseg_Vrest']:
                 del pset_0[key]
             md5_0 = hashlib.md5(
                 json.dumps(

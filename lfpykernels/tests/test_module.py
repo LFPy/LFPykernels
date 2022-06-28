@@ -124,9 +124,9 @@ class TestSuite(unittest.TestCase):
                 sec.e_pas = Vrest  # (mV)
 
         # parameters
-        Vrest = -65
+        Vrest = -65.
         dt = 2**-4
-        tau = 100
+        tau = 100.
 
         cellParameters = dict(
             templatefile=os.path.join(lfpykernels.__path__[0], 'tests',
