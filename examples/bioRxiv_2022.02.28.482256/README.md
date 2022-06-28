@@ -29,26 +29,26 @@ Adaptations or modifications of this work should comply with the provided `LICEN
 
 For the preprint above, we mainly used the following software and versions thereof:
 
-    GCC 9.3.0,
-    Python 3.8.10,
-    ipython 7.13.0,
+    GCC 11.2.0,
+    mpich 3.4.2,
+    Python 3.9.6,
+    ipython 7.27.0,
     jupyter-notebook 6.0.3,
-    numpy 1.17.4,
-    scipy 1.3.3,
-    matplotlib 3.1.2,
-    pandas 0.25.3,
+    numpy 1.21.3,
+    scipy 1.7.1,
+    matplotlib 3.4.3,
+    pandas 1.3.4,
     seaborn 0.11.2,
     pymoo 0.4.2.2,
-    mpich 3.3.2,
-    mpi4py 3.0.3,
-    h5py 2.10.0,
-    NEURON 8.0.0,
+    mpi4py 3.1.3,
+    h5py 3.5.0,
+    NEURON 8.0.2,
     MEAutility 1.5.0,
     LFPykit 0.4,
-    LFPy 2.2.4,
-    LFPykernels 0.1.rc6 (https://github.com/LFPy/LFPykernels, git SHA: 62d15fb),
-    NEST 3.1 (https://github.com/nest/nest-simulator, git SHA: 512022e),
-    NESTML 4.0 (https://github.com/nest/nestml, git SHA: a3a1b0d),
+    LFPy 2.2.6,
+    LFPykernels 0.1.rc8 (https://github.com/LFPy/LFPykernels, git SHA: 4fd79ab),
+    NEST 3.1 (https://github.com/nest/nest-simulator, git SHA: 512022e54),
+    NESTML 4.0-post-dev (https://github.com/nest/nestml, git SHA: 0b251ec),
     parameters 0.2.1 (https://github.com/NeuralEnsemble/parameters, git SHA:b95bac2).
 
 
@@ -116,14 +116,14 @@ Make sure the Docker client is running on the host. Then:
     # build image using Docker:
     docker build -t lfpykernels - < Dockerfile
 
-    # start container mounting local file system, then open a jupyter-notebook session:
+    # start container mounting local file system, then open a jupyter-lab session:
     docker run --mount type=bind,source="$(pwd)",target=/opt/data -it -p 5000:5000 lfpykernels
     /# cd /opt/data/
-    /# jupyter-notebook --ip 0.0.0.0 --port=5000 --no-browser --allow-root
+    /# jupyter-lab --ip 0.0.0.0 --port=5000 --no-browser --allow-root
     # take note of the URL printed to the terminal, and open it in a browser on the host.
 
     # oneliner (open URL, then browse to `/opt/data/` and open notebooks):
-    docker run --mount type=bind,source="$(pwd)",target=/opt/data -it -p 5000:5000 lfpykernels jupyter-notebook --ip 0.0.0.0 --port=5000 --no-browser --allow-root
+    docker run --mount type=bind,source="$(pwd)",target=/opt/data -it -p 5000:5000 lfpykernels jupyter-lab --ip 0.0.0.0 --port=5000 --no-browser --allow-root
     # take note of the URL printed to the terminal, and open it in a browser on the host.
 
     # A working Python/MPI environment should be present in the running container. Hence scripts can be run interactively issuing:
@@ -138,31 +138,34 @@ Make sure the Docker client is running on the host. Then:
     # run a simulation with MPI, assuming we have access to 1024 physical CPU cores (also make sure that parameter files have been created by an earlier call to `python run_pscan.py`)
     /# mpiexec -n 1024 python example_network.py c8a7f7ed6495c9fc60060f31d788208f
 
+
 ## Singularity
 
-Singularity things (see https://apps.fz-juelich.de/jsc/hps/jusuf/cluster/container-runtime.html):
-
-Build singularity container `lfpykernels.sif` using the JSC build system:
+Instructions to create Singularity (https://docs.sylabs.io/guides/3.5/user-guide/index.html#) container named `lfpykernels.sif` using the provided `Dockerfile` recipe, 
+typically on a HPC resource providing corresponding build tools (cf. https://apps.fz-juelich.de/jsc/hps/jusuf/cluster/container-runtime.html).
 
     module --force purge
-    module load Stages/2022 GCCcore/.11.2.0 Apptainer-Tools/2022 GCC/11.2.0 ParaStationMPI/5.5.0-1
+    module load Stages/2022  GCCcore/.11.2.0 Apptainer-Tools/2022
+
     sib upload ./Dockerfile lfpykernels
-    sib build --recipe-name lfpykernels --blocking  # this will take a few minutes
+    sib build --recipe-name lfpykernels --blocking
+    # wait ... 
     sib download --recipe-name lfpykernels
+    sib remove --recipe-name lfpykernels  # remove recipe
+    # test installation
+    singularity exec lfpykernels.sif ipython3 -i
 
 
 Compile NMODL files using the `nrnivmodl` script included in the container:
 
     cd mod && rm -rf x86_64 && singularity exec ../lfpykernels.sif nrnivmodl && cd ..  # compile NMODL files for the container
-    srun --mpi=pmi2 singularity exec lfpykernels.sif python3 -u example_network.py 72d90a2e763ba9c3a9d85a4a715ec04c
 
 
-Make sure that jobscripts are configured for singularity, calling the built-in python executable:
-    unset DISPLAY  # matplotlib may look for a nonexistant display on compute node(s)
+Ensure that Slurm jobscripts are configured for singularity, calling the built-in python executable:
+    unset DISPLAY
     module --force purge
     module load Stages/2022  GCCcore/.11.2.0 Apptainer-Tools/2022 GCC/11.2.0 ParaStationMPI/5.5.0-1
-    srun --mpi=pmi2 singularity exec lfpykernels.sif python3 -u example_network.py adb947bfb931a5a8d09ad078a6d256b0  # execute simulation
-
+    srun --mpi=pmi2 singularity exec lfpykernels.sif python3 -u example_network.py adb947bfb931a5a8d09ad078a6d256b0
 
 
 ## Files
@@ -204,7 +207,7 @@ Notebooks:
 - `Figure*.ipynb`: Jupyter notebooks used to generate the corresponding figures post simulation plus some analysis
 
 
-A 3.16GB .zip file with some precomputed output data is available for download from https://drive.google.com/file/d/11Ie1bmzGHFa_K599bhvdco3vOn98eu3C/view?usp=sharing
+A 4.6GB .zip file with some precomputed output data is available for download from https://drive.google.com/file/d/197nUo5FlmZgZer7xQx1daPbaplodGpVE/view?usp=sharing
 Unzip it's content in this directory, and one should be able to execute all notebooks.
 
 
