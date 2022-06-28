@@ -522,7 +522,7 @@ class KernelApprox(object):
                 # modify synapse parameters to account for current-based
                 # synapses linearized around Vrest
                 d = self.synapseParameters[iii].copy()
-                if isinstance(Vrest, float):
+                if isinstance(Vrest, (int, float)):
                     w = [- d['weight'] * (Vrest - d['e'])] * cell.totnsegs
                     # d['weight'] = - d['weight'] * (Vrest - d['e'])
                 else:
