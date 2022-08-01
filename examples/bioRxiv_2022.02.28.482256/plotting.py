@@ -121,11 +121,12 @@ def draw_lineplot(
             fig.dpi_scale_trans.inverted()).width
         # bbox.width
         # ax.text(x[-1] + (x[-1] - x[0]) / width * 0.1, 0.5, 'test')
-        ax.text(tvec[tinds][-1] + np.diff(T) * figwidth / axwidth * 0.005, 0,
-                '$2^{' + '{}'.format(int(round(np.log2(vlimround)))
-                                     ) + '}$ ' + '{0}'.format(unit),
-                color='k', rotation='vertical',
-                va='center')
+        ax.text(tvec[tinds][-1], 0,
+        '\n\n$2^{' + '{}'.format(int(round(np.log2(vlimround)))
+                                ) + '}$ ' + '{0}'.format(unit),
+        color='k', rotation='vertical',
+        va='center', ha='center')
+
 
     ax.axis(ax.axis('tight'))
     ax.yaxis.set_ticks(yticks)
