@@ -1,1 +1,1 @@
-version = "0.1.rc8"
+version = "0.1"
