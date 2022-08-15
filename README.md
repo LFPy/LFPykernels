@@ -17,9 +17,9 @@ impulse response functions for finite-sized neuronal network models.
 
 These codes correspond to results shown in the peer-reviewed manuscript:
 
-    Hagen E, Magnusson SH, Ness TV, Halnes G, Babu PN, et al. (2022) 
-    Brain signal predictions from multi-scale networks using a linearized framework. 
-    PLOS Computational Biology 18(8): e1010353. https://doi.org/10.1371/journal.pcbi.1010353
+Hagen E, Magnusson SH, Ness TV, Halnes G, Babu PN, et al. (2022)
+Brain signal predictions from multi-scale networks using a linearized framework.
+PLOS Computational Biology 18(8): e1010353. <https://doi.org/10.1371/journal.pcbi.1010353>
 
 Bibtex format:
 
