@@ -140,11 +140,12 @@ aarch64
 
 # example file output
 *.pdf
+*.eps
 *.h5
 *.zip
-/examples/bioRxiv_2022.02.28.482256/L5bPCmodelsEH
-/examples/bioRxiv_2022.02.28.482256/jobs/
-/examples/bioRxiv_2022.02.28.482256/parameters/
-/examples/bioRxiv_2022.02.28.482256/logs/
-/examples/bioRxiv_2022.02.28.482256/output/
-/examples/bioRxiv_2022.02.28.482256/figures/
+/examples/Hagen_et_al_2022_PLOS_Comput_Biol/L5bPCmodelsEH
+/examples/Hagen_et_al_2022_PLOS_Comput_Biol/jobs/
+/examples/Hagen_et_al_2022_PLOS_Comput_Biol/parameters/
+/examples/Hagen_et_al_2022_PLOS_Comput_Biol/logs/
+/examples/Hagen_et_al_2022_PLOS_Comput_Biol/output/
+/examples/Hagen_et_al_2022_PLOS_Comput_Biol/figures/
