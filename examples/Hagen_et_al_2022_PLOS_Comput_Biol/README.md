@@ -194,7 +194,7 @@ Notebooks:
 
 - `Figure*.ipynb`: Jupyter notebooks used to generate the corresponding figures post simulation plus some analysis
 
-A 4.6GB .zip file with some precomputed output data is available for download from <https://drive.google.com/file/d/197nUo5FlmZgZer7xQx1daPbaplodGpVE/view?usp=sharing>
+A 4.6GB .zip file with some precomputed output data corresponding to Hagen E et al. (2022) in PLOS Comput Biol is available for download from <https://doi.org/10.5281/zenodo.6992596>
 Unzip it's content in this directory, and one should be able to execute all notebooks.
 
 ### Issues
