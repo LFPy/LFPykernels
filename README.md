@@ -79,9 +79,9 @@ Let $\nu_X(t)$ describe presynaptic population spike rates in units of spikes/dt
 and $H_{YX}(\mathbf{R}, \tau)$ predicted spike-signal kernels for the connections between presynaptic populations $X$ and
 postsynaptic populations $Y$ the full signal may then be computed via the sum over linear convolutions:
 
-```math
-V(r, t) = \sum_X \sum_Y (\nu_X \ast H_{YX})(\mathbf{R}, t)
-```
+    ```math
+    V(\mathbf{R}, t) = \sum_X \sum_Y (\nu_X \ast H_{YX})(\mathbf{R}, t)
+    ```
 
 A more elaborate example combining kernel predictions with a spiking point-neuron network simulation is provided in the example notebook
 https://github.com/LFPy/LFPykernels/blob/main/examples/LIF_net_forward_model_predictions.ipynb
