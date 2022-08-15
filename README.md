@@ -79,20 +79,18 @@ Let $\nu_X(t)$ describe presynaptic population spike rates in units of spikes/dt
 and $H_{YX}(\mathbf{R}, \tau)$ predicted spike-signal kernels for the connections between presynaptic populations $X$ and
 postsynaptic populations $Y$ the full signal may then be computed via the sum over linear convolutions:
 
-    ```math
-    V(\mathbf{R}, t) = \sum_X \sum_Y (\nu_X \ast H_{YX})(\mathbf{R}, t)
-    ```
+$$V(\mathbf{R}, t) = \sum_X \sum_Y (\nu_X \ast H_{YX})(\mathbf{R}, t)$$
 
 A more elaborate example combining kernel predictions with a spiking point-neuron network simulation is provided in the example notebook
-https://github.com/LFPy/LFPykernels/blob/main/examples/LIF_net_forward_model_predictions.ipynb
+<https://github.com/LFPy/LFPykernels/blob/main/examples/LIF_net_forward_model_predictions.ipynb>
 
-For questions, please raise an issue at https://github.com/LFPy/LFPykernels/issues.
+For questions, please raise an issue at <https://github.com/LFPy/LFPykernels/issues>.
 
 ## Usage
 
 Example prediction of kernel function $H$ mapping spike events of a
 presynaptic inhibitory population $X=='I'$ to extracellular potential contributions by a
-postsynaptic excitatory population $Y=='E'$ (see https://github.com/LFPy/LFPykernels/blob/main/examples/README_example.ipynb):
+postsynaptic excitatory population $Y=='E'$ (see <https://github.com/LFPy/LFPykernels/blob/main/examples/README_example.ipynb>):
 
     import matplotlib.pyplot as plt
     import scipy.stats as st
@@ -208,7 +206,6 @@ postsynaptic excitatory population $Y=='E'$ (see https://github.com/LFPy/LFPyker
         Vrest=Vrest, dt=dt, X='I', t_X=t_X, tau=tau,
         g_eff=g_eff)
 
-
 ## Physical units
 
 Notes on physical units used in `LFPykernels`:
@@ -234,21 +231,21 @@ Notes on physical units used in `LFPykernels`:
 ## Documentation
 
 The online Documentation of `LFPykernels` can be found here:
-https://lfpykernels.readthedocs.io/en/latest
+<https://lfpykernels.readthedocs.io/en/latest>
 
 ## Dependencies
 
 `LFPykernels` is implemented in Python and is written (and continuously tested) for `Python >= 3.7` (older versions may or may not work).
-The main `LFPykernels` module depends on ``LFPy`` (https://github.com/LFPy/LFPy, https://LFPy.readthedocs.io).
+The main `LFPykernels` module depends on ``LFPy`` (<https://github.com/LFPy/LFPy>, <https://LFPy.readthedocs.io>).
 
 Running all unit tests and example files may in addition require `py.test`, `matplotlib`,
 `LFPy`.
 
 ## Installation
 
-### From development sources (https://github.com/LFPy/LFPykernels)
+### From development sources (<https://github.com/LFPy/LFPykernels>)
 
-Install the current development version on https://GitHub.com using `git` (https://git-scm.com):
+Install the current development version on <https://GitHub.com> using `git` (<https://git-scm.com>):
 
     git clone https://github.com/LFPy/LFPykernels.git
     cd LFPykernels
@@ -262,9 +259,9 @@ For active development, link the repository location
 
     pip install -e .  # --user optional
 
-### Installation of stable releases on PyPI.org (https://www.pypi.org)
+### Installation of stable releases on PyPI.org (<https://www.pypi.org>)
 
-Installing stable releases from the Python Package Index (https://www.pypi.org/project/lfpykernels):
+Installing stable releases from the Python Package Index (<https://www.pypi.org/project/lfpykernels>):
 
     pip install lfpykernels  # --user optional
 
@@ -274,7 +271,7 @@ To upgrade the installation using pip:
 
 ## Docker
 
-We provide a Docker (https://www.docker.com) container recipe file with LFPykernels etc.
+We provide a Docker (<https://www.docker.com>) container recipe file with LFPykernels etc.
 To get started, install Docker and issue either:
 
     # build Dockerfile from GitHub
@@ -307,24 +304,15 @@ container can be accessed after invoking them by issuing:
     jupyter-notebook --ip 0.0.0.0 --port=5000 --no-browser --allow-root
 
 and opening the resulting URL in a browser on the host computer, similar to:
-http://127.0.0.1:5000/?token=dcf8f859f859740fc858c568bdd5b015e0cf15bfc2c5b0c1
+<http://127.0.0.1:5000/?token=dcf8f859f859740fc858c568bdd5b015e0cf15bfc2c5b0c1>
 
 ## Acknowledgements
 
-This work was supported by the
-European Union Horizon 2020 Research and
-Innovation Programme under Grant Agreement
-No. 785907 and No. 945539 Human Brain Project
-(HBP) SGA2 and SGA3. We also
-acknowledge the use of Fenix Infrastructure
-resources, which are partially funded from the 
-European Union’s Horizon 2020 Research and
-Innovation Programme through the ICEI Project
-under the Grant Agreement No. 800858;
-The Helmholtz Alliance through the Initiative and
-Networking Fund of the Helmholtz Association and
-the Helmholtz Portfolio theme Supercomputing
-and Modeling for the Human Brain; and The
-Excellence Strategy of the Federal Government and
-the La¨nder [G:(DE-82)EXS-PF-JARA-SDS005, G:
-(DE-82)EXS-SF-neuroIC002].
+This work was supported by the European Union Horizon 2020 Research and
+Innovation Programme under Grant Agreement No. 785907 and No. 945539 Human Brain Project (HBP) SGA2 and SGA3.
+We also acknowledge the use of Fenix Infrastructure resources,
+which are partially funded from the European Union’s Horizon 2020 Research and Innovation Programme
+through the ICEI Project under the Grant Agreement No. 800858; The Helmholtz Alliance through the Initiative and
+Networking Fund of the Helmholtz Association and the Helmholtz Portfolio theme Supercomputing
+and Modeling for the Human Brain; and The Excellence Strategy of the Federal Government and
+the La¨nder [G:(DE-82)EXS-PF-JARA-SDS005, G: (DE-82)EXS-SF-neuroIC002].
