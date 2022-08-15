@@ -3,7 +3,6 @@
 The ``LFPykernels`` package incorporates forward-model based calculations of causal spike-signal
 impulse response functions for finite-sized neuronal network models.
 
-
 ## Build Status
 
 [![DOI](https://zenodo.org/badge/424143558.svg)](https://zenodo.org/badge/latestdoi/424143558)
@@ -12,19 +11,35 @@ impulse response functions for finite-sized neuronal network models.
 [![flake8 lint](https://github.com/LFPy/LFPykernels/actions/workflows/flake8.yml/badge.svg)](https://github.com/LFPy/LFPykernels/actions/workflows/flake8.yml)
 [![Python application](https://github.com/LFPy/LFPykernels/workflows/Python%20application/badge.svg)](https://github.com/LFPy/LFPykernels/actions?query=workflow%3A%22Python+application%22)
 [![Upload Python Package](https://github.com/LFPy/LFPykernels/workflows/Upload%20Python%20Package/badge.svg)](https://pypi.org/project/LFPykernels)
-[![Conda Recipe](https://img.shields.io/badge/recipe-lfpykernels-green.svg)](https://anaconda.org/conda-forge/lfpykernels)
-[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/lfpykernels.svg)](https://anaconda.org/conda-forge/lfpykernels)
-[![Conda Version](https://img.shields.io/conda/vn/conda-forge/lfpykernels.svg)](https://anaconda.org/conda-forge/lfpykernels)
-[![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/lfpykernels.svg)](https://anaconda.org/conda-forge/lfpykernels)
 [![License](http://img.shields.io/:license-GPLv3+-green.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
-
 
 ## Citation
 
-If you use this software, please cite it as (change version accordingly):
+These codes correspond to results shown in the peer-reviewed manuscript:
 
-    Hagen, Espen. (2021). LFPykernels (version/git-SHA/git-tag). Zenodo. https://doi.org/10.5281/zenodo.5720619
+    Hagen E, Magnusson SH, Ness TV, Halnes G, Babu PN, et al. (2022) 
+    Brain signal predictions from multi-scale networks using a linearized framework. 
+    PLOS Computational Biology 18(8): e1010353. https://doi.org/10.1371/journal.pcbi.1010353
 
+Bibtex format:
+
+    @article{10.1371/journal.pcbi.1010353,
+        doi = {10.1371/journal.pcbi.1010353},
+        author = {Hagen, Espen AND Magnusson, Steinn H. AND Ness, Torbjørn V. AND Halnes, Geir AND Babu, Pooja N. AND Linssen, Charl AND Morrison, Abigail AND Einevoll, Gaute T.},
+        journal = {PLOS Computational Biology},
+        publisher = {Public Library of Science},
+        title = {Brain signal predictions from multi-scale networks using a linearized framework},
+        year = {2022},
+        month = {08},
+        volume = {18},
+        url = {https://doi.org/10.1371/journal.pcbi.1010353},
+        pages = {1-51},
+        number = {8},
+    }
+
+If you use this software, please cite it as (change `<version>/<git-SHA>/<git-tag>` accordingly):
+
+    Hagen, Espen. (2021). LFPykernels (<version>/<git-SHA>/<git-tag>). Zenodo. https://doi.org/10.5281/zenodo.5720619
 
 BibTex format:
 
@@ -35,36 +50,13 @@ BibTex format:
       year         = 2021,
       note         = {If you use this software, please cite it as below.},
       publisher    = {Zenodo},
-      version      = {version/git-SHA/git-tag},
+      version      = {<version>/<git-SHA>/<git-tag>},
       doi          = {10.5281/zenodo.5720619},
       url          = {https://doi.org/10.5281/zenodo.5720619}
     }
 
-
-These codes correspond to results shown in the preprint manuscript:
-
-    Brain signal predictions from multi-scale networks using a linearized framework
-    Espen Hagen, Steinn H. Magnusson, Torbjørn V. Ness, Geir Halnes, Pooja N. Babu, Charl Linssen, Abigail Morrison, Gaute T. Einevoll
-    bioRxiv 2022.02.28.482256; doi: https://doi.org/10.1101/2022.02.28.482256
-
-
-Bibtex format:
-
-    @article {Hagen2022.02.28.482256,
-    	author = {Hagen, Espen and Magnusson, Steinn H. and Ness, Torbjørn V. and Halnes, Geir and Babu, Pooja N. and Linssen, Charl and Morrison, Abigail and Einevoll, Gaute T.},
-    	title = {Brain signal predictions from multi-scale networks using a linearized framework},
-    	elocation-id = {2022.02.28.482256},
-    	year = {2022},
-    	doi = {10.1101/2022.02.28.482256},
-    	publisher = {Cold Spring Harbor Laboratory},
-    	URL = {https://www.biorxiv.org/content/early/2022/03/02/2022.02.28.482256},
-    	eprint = {https://www.biorxiv.org/content/early/2022/03/02/2022.02.28.482256.full.pdf},
-    	journal = {bioRxiv}
-    }
-
 If you use or refer to this work, please cite it as above.
 Adaptations or modifications of this work should comply with the provided `LICENSE` file provided with this repository.  
-
 
 ## Features
 
@@ -78,14 +70,15 @@ population on each signal type can be captured by single linearised multicompart
 models representative of each population and simultaneously accounting for known distributions of
 cells and synapses in space, distributions of delays, synaptic currents and associated return currents.
 
-A scientific publication describing the present methodology in detail is planned.
+The present methodology is described in detail by [Hagen E et al., 2022](https://doi.org/10.1371/journal.pcbi.1010353).
 The intended use for filter kernels predicted using ``LFPykernels`` is forward-model based signal predictions
 from neuronal network simulation frameworks using simplified neuron representations like leaky integrate-and-fire
-point neurons or rate-based neurons.
-Let ``nu_X(t)`` describe presynaptic population spike rates in units of spikes/dt
-and ``H_YX(r, tau)`` predicted spike-signal kernels for the connections between presynaptic populations ``X`` and
-postsynaptic populations ``Y`` the full signal may then be computed via the sum over linear convolutions
-```
+point neurons or rate-based neurons, but can also be used with biophysically detailed network models.
+
+Let $nu_X(t)$ describe presynaptic population spike rates in units of spikes/dt
+and $H_YX(r, tau)$ predicted spike-signal kernels for the connections between presynaptic populations $X$ and
+postsynaptic populations $Y$ the full signal may then be computed via the sum over linear convolutions
+```math
 V(r, t) = sum_X sum_Y conv(nu_X, H_YX)(r, t)
 ```
 
@@ -94,12 +87,11 @@ https://github.com/LFPy/LFPykernels/blob/main/examples/LIF_net_forward_model_pre
 
 For questions, please raise an issue at https://github.com/LFPy/LFPykernels/issues.
 
-
 ## Usage
 
-Example prediction of kernel function ``H`` mapping spike events of a
-presynaptic inhibitory population ``X=='I'`` to extracellular potential contributions by a
-postsynaptic excitatory population ``Y=='E'`` (see https://github.com/LFPy/LFPykernels/blob/main/examples/README_example.ipynb):
+Example prediction of kernel function $H$ mapping spike events of a
+presynaptic inhibitory population $X=='I'$ to extracellular potential contributions by a
+postsynaptic excitatory population $Y=='E'$ (see https://github.com/LFPy/LFPykernels/blob/main/examples/README_example.ipynb):
 
     import matplotlib.pyplot as plt
     import scipy.stats as st
@@ -238,12 +230,10 @@ Notes on physical units used in `LFPykernels`:
 
 - Spike rates are assumed to be in units of (# spikes / ∆t)
 
-
 ## Documentation
 
 The online Documentation of `LFPykernels` can be found here:
 https://lfpykernels.readthedocs.io/en/latest
-
 
 ## Dependencies
 
@@ -253,50 +243,33 @@ The main `LFPykernels` module depends on ``LFPy`` (https://github.com/LFPy/LFPy,
 Running all unit tests and example files may in addition require `py.test`, `matplotlib`,
 `LFPy`.
 
-
 ## Installation
 
 ### From development sources (https://github.com/LFPy/LFPykernels)
 
 Install the current development version on https://GitHub.com using `git` (https://git-scm.com):
 
-    $ git clone https://github.com/LFPy/LFPykernels.git
-    $ cd LFPykernels
-    $ python setup.py install  # --user optional
+    git clone https://github.com/LFPy/LFPykernels.git
+    cd LFPykernels
+    python setup.py install  # --user optional
 
 or using `pip`:
 
-    $ pip install .  # --user optional
+    pip install .  # --user optional
 
 For active development, link the repository location
 
-    $ pip install -e .  # --user optional
+    pip install -e .  # --user optional
 
 ### Installation of stable releases on PyPI.org (https://www.pypi.org)
 
 Installing stable releases from the Python Package Index (https://www.pypi.org/project/lfpykernels):
 
-    $ pip install lfpykernels  # --user optional
+    pip install lfpykernels  # --user optional
 
 To upgrade the installation using pip:
 
-    $ pip install --upgrade --no-deps lfpykernels
-
-
-### Installation of stable releases on conda-forge (https://conda-forge.org)
-
-Installing `lfpykernels` from the `conda-forge` channel can be achieved by adding `conda-forge` to your channels with:
-
-    $ conda config --add channels conda-forge
-
-Once the `conda-forge` channel has been enabled, `lfpykernels` can be installed with:
-
-    $ conda install lfpykernels
-
-It is possible to list all of the versions of `lfpykernels` available on your platform with:
-
-    $ conda search lfpykernels --channel conda-forge
-
+    pip install --upgrade --no-deps lfpykernels
 
 ## Docker
 
@@ -304,26 +277,22 @@ We provide a Docker (https://www.docker.com) container recipe file with LFPykern
 To get started, install Docker and issue either:
 
     # build Dockerfile from GitHub
-    $ docker build -t lfpykernels https://raw.githubusercontent.com/LFPy/LFPykernels/main/Dockerfile
-    $ docker run -it -p 5000:5000 lfpykernels
-
+    docker build -t lfpykernels https://raw.githubusercontent.com/LFPy/LFPykernels/main/Dockerfile
+    docker run -it -p 5000:5000 lfpykernels
 
 or
 
     # build local Dockerfile (obtained by cloning repo, checkout branch etc.)
-    $ docker build -t lfpykernels - < Dockerfile
-    $ docker run -it -p 5000:5000 lfpykernels
-
+    docker build -t lfpykernels - < Dockerfile
+    docker run -it -p 5000:5000 lfpykernels
 
 If the docker file should fail for some reason it is possible to store the build log and avoid build caches by issuing
 
-    $ docker build --no-cache --progress=plain -t lfpykernels - < Dockerfile 2>&1 | tee lfpykernels.log
-
+    docker build --no-cache --progress=plain -t lfpykernels - < Dockerfile 2>&1 | tee lfpykernels.log
 
 For successful builds, the ``--mount`` option can be used to mount a folder on the host to a target folder as:
 
-    $ docker run --mount type=bind,source="$(pwd)",target=/opt/data -it -p 5000:5000 lfpykernels
-
+    docker run --mount type=bind,source="$(pwd)",target=/opt/data -it -p 5000:5000 lfpykernels
 
 which mounts the present working dirctory (``$(pwd)``) to the ``/opt/data`` directory of the container.
 Try mounting the ``LFPykernels`` source directory for example (by setting ``source="<path-to-LFPykernels>"``).
@@ -333,14 +302,28 @@ when the container is running.
 Jupyter notebook servers running from within the
 container can be accessed after invoking them by issuing:
 
-    $ cd /opt/data/examples/
-    $ jupyter-notebook --ip 0.0.0.0 --port=5000 --no-browser --allow-root
-
+    cd /opt/data/examples/
+    jupyter-notebook --ip 0.0.0.0 --port=5000 --no-browser --allow-root
 
 and opening the resulting URL in a browser on the host computer, similar to:
 http://127.0.0.1:5000/?token=dcf8f859f859740fc858c568bdd5b015e0cf15bfc2c5b0c1
 
-
 ## Acknowledgements
 
-This work was supported by the European Union Horizon 2020 Research and Innovation Programme under Grant Agreement No. 785907 and No. 945539 Human Brain Project (HBP) SGA2 and SGA3.
+This work was supported by the
+European Union Horizon 2020 Research and
+Innovation Programme under Grant Agreement
+No. 785907 and No. 945539 Human Brain Project
+(HBP) SGA2 and SGA3. We also
+acknowledge the use of Fenix Infrastructure
+resources, which are partially funded from the 
+European Union’s Horizon 2020 Research and
+Innovation Programme through the ICEI Project
+under the Grant Agreement No. 800858;
+The Helmholtz Alliance through the Initiative and
+Networking Fund of the Helmholtz Association and
+the Helmholtz Portfolio theme Supercomputing
+and Modeling for the Human Brain; and The
+Excellence Strategy of the Federal Government and
+the La¨nder [G:(DE-82)EXS-PF-JARA-SDS005, G:
+(DE-82)EXS-SF-neuroIC002].
