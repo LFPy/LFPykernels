@@ -17,6 +17,7 @@ RUN apt-get update && \
     python3-astropy=4.0-4ubuntu1 \
     python3-yaml=5.3.1-1ubuntu0.1 \
     python3-sympy=1.5.1-2.1 \
+    python3-notebook=6.0.3-2 \
     antlr4=4.7.2-2 \
     ipython3=7.13.0-1 \
     jupyter=4.6.3-3 \
