@@ -18,7 +18,6 @@ RUN apt-get update && \
     python3-yaml=5.3.1-1ubuntu0.1 \
     python3-sympy=1.5.1-2.1 \
     python3-notebook=6.0.3-2 \
-    antlr4=4.7.2-2 \
     ipython3=7.13.0-1 \
     jupyter=4.6.3-3 \
     jupyter-notebook=6.0.3-2 \
@@ -61,11 +60,6 @@ RUN rm -r nest-build
 # Add NEST binary folder to PATH
 RUN echo "source /opt/nest/bin/nest_vars.sh" >> root/.bashrc
 
-
-# ---- install NESTML -----
-RUN pip install git+https://github.com/nest/nestml.git@a3a1b0d9fdb26e53aae45d8520c1f5b7dc97eaa3#egg=pynestml
-
-
 # ---- install NEURON ----
 RUN git clone --depth 1 -b 8.0.0 https://github.com/neuronsimulator/nrn.git /usr/src/nrn
 RUN mkdir nrn-bld
@@ -92,6 +86,9 @@ RUN rm -r nrn-bld
 RUN pip install pymoo==0.4.2.2
 RUN pip install git+https://github.com/NeuralEnsemble/parameters@b95bac2bd17f03ce600541e435e270a1e1c5a478#egg=parameters
 
+# ---- install NESTML -----
+RUN pip install antlr4-python3-runtime==4.9.2
+RUN pip install git+https://github.com/nest/nestml.git@a3a1b0d9fdb26e53aae45d8520c1f5b7dc97eaa3#egg=pynestml
 
 # ---- install LFPykernels (main branch) -----
 RUN pip install git+https://github.com/LFPy/LFPykernels@main#egg=lfpykernels
