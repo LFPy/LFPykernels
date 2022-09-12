@@ -7,5 +7,5 @@ _PATCH = "1"
 # https://semver.org/#is-v123-a-semantic-version for the semantics.
 _SUFFIX = ""
 
-VERSION_SHORT = "{0}.{1}".format(_MAJOR, _MINOR)
-VERSION = "{0}.{1}.{2}{3}".format(_MAJOR, _MINOR, _PATCH, _SUFFIX)
+version_short = "{0}.{1}".format(_MAJOR, _MINOR)
+version = "{0}.{1}.{2}{3}".format(_MAJOR, _MINOR, _PATCH, _SUFFIX)
