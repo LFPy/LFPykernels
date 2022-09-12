@@ -90,7 +90,7 @@ For questions, please raise an issue at <https://github.com/LFPy/LFPykernels/iss
 
 ## Usage
 
-Example prediction of kernel function `$H$` mapping spike events of a
+Example prediction of kernel function `$H(\mathbf{R},\tau)$` mapping spike events of a
 presynaptic inhibitory population `$X==\mathrm{I}$` to extracellular potential contributions by a
 postsynaptic excitatory population `$Y==\mathrm{E}$` (see <https://github.com/LFPy/LFPykernels/blob/main/examples/README_example.ipynb>):
 
