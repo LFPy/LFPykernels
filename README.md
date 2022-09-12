@@ -75,11 +75,13 @@ The intended use for filter kernels predicted using ``LFPykernels`` is forward-m
 from neuronal network simulation frameworks using simplified neuron representations like leaky integrate-and-fire
 point neurons or rate-based neurons, but can also be used with biophysically detailed network models.
 
-Let $\nu_X(t)$ describe presynaptic population spike rates in units of spikes/dt
-and $H_{YX}(\mathbf{R}, \tau)$ predicted spike-signal kernels for the connections between presynaptic populations $X$ and
-postsynaptic populations $Y$ the full signal may then be computed via the sum over linear convolutions:
+Let `$\nu_X(t)$` describe presynaptic population spike rates in units of spikes/dt
+and `$H_{YX}(\mathbf{R}, \tau)$` predicted spike-signal kernels for the connections between presynaptic populations `$X$` and
+postsynaptic populations `$Y$` the full signal may then be computed via the sum over linear convolutions:
 
-$$V(\mathbf{R}, t) = \sum_X \sum_Y (\nu_X \ast H_{YX})(\mathbf{R}, t)$$
+``` math
+V(\mathbf{R}, t) = \sum_X \sum_Y (\nu_X \ast H_{YX})(\mathbf{R}, t)
+```
 
 A more elaborate example combining kernel predictions with a spiking point-neuron network simulation is provided in the example notebook
 <https://github.com/LFPy/LFPykernels/blob/main/examples/LIF_net_forward_model_predictions.ipynb>
@@ -88,9 +90,9 @@ For questions, please raise an issue at <https://github.com/LFPy/LFPykernels/iss
 
 ## Usage
 
-Example prediction of kernel function $H$ mapping spike events of a
-presynaptic inhibitory population $X=='I'$ to extracellular potential contributions by a
-postsynaptic excitatory population $Y=='E'$ (see <https://github.com/LFPy/LFPykernels/blob/main/examples/README_example.ipynb>):
+Example prediction of kernel function `$H(\mathbf{R},\tau)$` mapping spike events of a
+presynaptic inhibitory population `$X==\mathrm{I}$` to extracellular potential contributions by a
+postsynaptic excitatory population `$Y==\mathrm{E}$` (see <https://github.com/LFPy/LFPykernels/blob/main/examples/README_example.ipynb>):
 
     import matplotlib.pyplot as plt
     import scipy.stats as st
