@@ -34,7 +34,7 @@ GNU General Public License for more details.
   * version
 """
 
-from .version import version as __version__
+from .version import VERSION as __version__
 from .kernel_approximator import (KernelApprox,
                                   GaussCylinderPotential,
                                   KernelApproxCurrentDipoleMoment)
