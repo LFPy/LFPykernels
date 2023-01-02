@@ -94,6 +94,7 @@ Example prediction of kernel function `$H(\mathbf{R},\tau)$` mapping spike event
 presynaptic inhibitory population `$X==\mathrm{I}$` to extracellular potential contributions by a
 postsynaptic excitatory population `$Y==\mathrm{E}$` (see <https://github.com/LFPy/LFPykernels/blob/main/examples/README_example.ipynb>):
 
+    import os
     import matplotlib.pyplot as plt
     import scipy.stats as st
     import numpy as np

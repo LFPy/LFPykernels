@@ -88,7 +88,7 @@ RUN pip install git+https://github.com/NeuralEnsemble/parameters@b95bac2bd17f03c
 
 # ---- install NESTML -----
 RUN pip install antlr4-python3-runtime==4.9.2
-RUN pip install git+https://github.com/nest/nestml.git@a3a1b0d9fdb26e53aae45d8520c1f5b7dc97eaa3#egg=pynestml
+RUN pip install git+https://github.com/nest/nestml.git@a3a1b0d9fdb26e53aae45d8520c1f5b7dc97eaa3#egg=nestml
 
 # ---- install LFPykernels (main branch) -----
 RUN pip install git+https://github.com/LFPy/LFPykernels@main#egg=lfpykernels
