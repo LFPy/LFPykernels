@@ -24,9 +24,9 @@ GNU General Public License for more details.
         the vertical z-axis and constant within a fixed radius in the radial
         directions (xy-plane).
   * KernelApproxCurrentDipoleMoment:
-        Modified ``lfpykit.CurrentDipoleMoment`` class that ignores contributions
-        to the current dipole moment in the the x- and y-directions
-        due to rotational symmetry around the z-axis.
+        Modified ``lfpykit.CurrentDipoleMoment`` class that ignores
+        contributions to the current dipole moment in the the x- and
+        y-directions due to rotational symmetry around the z-axis.
 
 
 :Modules:
