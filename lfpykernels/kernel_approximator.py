@@ -61,7 +61,7 @@ class KernelApprox(object):
     N_Y: int
         postsynaptic population size
     C_YX: array of float
-        pairwise connection probabilities betwen populations X and Y
+        pairwise connection probabilities between populations X and Y
     multapseFunction: callable
         ``scipy.stats.rv_discrete`` or ``scipy.stats.rv_continuous`` like
         function for determining mean number of synapse
@@ -355,7 +355,7 @@ class KernelApprox(object):
         probes: list of objects
             list of ``LFPykit.models`` like instances
             (should be instantiated with cell=None).
-        Vrest: float of list of float
+        Vrest: float or list of float
             Mean/Expectation value of postsynaptic membrane voltage used
             for linearization of synapse conductances.
             If list of length equal to the number of compartments, the
@@ -590,7 +590,11 @@ class KernelApprox(object):
                 data[h, ] = np.convolve(d, h_delta, 'same')
 
             # subtract kernel offsets at tau == 0:
-            data = data - data[:, cell.tvec == t_X]
+            #print(cell.tvec, t_X)
+            #print(np.any(cell.tvec == t_X))
+            #print(np.min(np.abs(cell.tvec - t_X)))
+            t_idx_ = np.argmin(np.abs(cell.tvec - t_X))
+            data = data - data[:, t_idx_, None]
 
             # force negative time lags to be zero
             data[:, cell.tvec < t_X] = 0
@@ -673,6 +677,8 @@ class GaussCylinderPotential(lfpykit.LinearModel):
         M = np.empty((self.z.size, self.cell.totnsegs))
         for j, z_e in enumerate(self.z):
             for i in range(self.cell.totnsegs):
+                # TODO: Change to np.convolve, and check that it gives same result? Why is not that used?
+                # TODO: Then add posibility for non-gaussian soma-depth distributions?
                 M[j, i], _ = si.quad(self._func, -np.inf, np.inf,
                                      args=(z_e, self.cell.z[i].mean()),
                                      limit=1000)
