@@ -99,6 +99,9 @@ class KernelApprox(object):
         number of extrinsic synapses
     nu_X: dict of floats
         presynaptic population rates (1/s)
+    conductance_based: bool
+        whether the original network model has conductance-based synapses. If not, we do not
+        need to convert to current-bases synapses
     '''
 
     def __init__(
@@ -127,7 +130,8 @@ class KernelApprox(object):
                                       tau1=0.2, tau2=1.8, e=0.0),
             nu_ext=40.,
             n_ext=128.,
-            nu_X=dict(E=1.)
+            nu_X=dict(E=1.),
+            conductance_based=True
     ):
         # set attributes
         self.X = X
@@ -148,6 +152,7 @@ class KernelApprox(object):
         self.nu_ext = nu_ext
         self.n_ext = n_ext
         self.nu_X = nu_X
+        self.conductance_based = conductance_based
 
     def get_delay(self, X, dt, tau):
         '''Get normalized transfer function for conduction delay distribution
@@ -386,6 +391,10 @@ class KernelApprox(object):
         H_YX: dict of ndarray
             shape (n_channels, 2 * tau // dt + 1) linear response kernel
         '''
+
+        if (not self.conductance_based) and g_eff:
+            print("g_eff is True but conductance_based is False. This probably makes no sense...?")
+
         # get conduction delay transfer function for connections from X to Y
         h_delta = self.get_delay(X, dt, tau)
 
@@ -414,17 +423,21 @@ class KernelApprox(object):
         # class NetworkCell parameters:
         cellParameters = deepcopy(self.cellParameters)
         cellParameters.update(dict(
-            dt=dt,
-            tstop=t_X + tau,
-            delete_sections=True
-        )
+                dt=dt,
+                tstop=t_X + tau,
+                delete_sections=True
+            )
         )
 
         # Create Cell object representative of whole population
         cell = TemplateCell(**cellParameters)
 
+        self.cell = cell
         # set cell rotation
         cell.set_rotation(**self.rotationParameters)
+        # TODO: I COULD FIND NOWHERE THE CELL IS MOVED TO ITS LOCATION??
+        # TODO: CHECK IF THIS MAKES SENSE!!
+        cell.set_pos(z=self.populationParameters['loc'])
 
         # need lists of segment references for each cell in order to shift
         # g_pas per segment
@@ -480,12 +493,14 @@ class KernelApprox(object):
             for h, funarg in enumerate(syn_pos['funargs']):
                 # NOTE: ignoring shifting synapse placements by the mean
                 # somatic depth, which may be implemented as:
-                # syn_pos['funargs'][h]['loc'] = \
-                #     funarg['loc'] + self.populationParameters['loc']
+                #syn_pos['funargs'][h]['loc'] = \
+                #    funarg['loc'] + self.populationParameters['loc']
+                # TODO: Any reason why we can't just implement this as a standard
+                # TODO: convolution, to get rid of the requirement that both soma and
+                # TODO: synapse positions should be gaussian?
                 syn_pos['funargs'][h]['scale'] = \
                     np.sqrt(funarg['scale']**2 +
                             self.populationParameters['scale']**2)
-
             # per-compartment connection probability
             p = self.get_rand_idx_area_and_distribution_prob(
                 cell,
@@ -522,20 +537,26 @@ class KernelApprox(object):
                 # modify synapse parameters to account for current-based
                 # synapses linearized around Vrest
                 d = self.synapseParameters[iii].copy()
-                if isinstance(Vrest, (int, float)):
-                    w = [- d['weight'] * (Vrest - d['e'])] * cell.totnsegs
-                    # d['weight'] = - d['weight'] * (Vrest - d['e'])
+
+                if self.conductance_based:
+                    if isinstance(Vrest, (int, float)):
+                        w = [- d['weight'] * (Vrest - d['e'])] * cell.totnsegs
+                        # d['weight'] = - d['weight'] * (Vrest - d['e'])
+                    else:
+                        w = [- d['weight'] * (Vr - d['e']) for Vr in Vrest]
+                    del d['e']  # no longer needed
+                    d['syntype'] = d['syntype'] + 'I'
                 else:
-                    w = [- d['weight'] * (Vr - d['e']) for Vr in Vrest]
-                del d['e']  # no longer needed
-                d['syntype'] = d['syntype'] + 'I'
+                    w = [d['weight']] * cell.totnsegs
 
                 # create current synapses activated by spike time of
                 # presynaptic population X
                 # setting weight scaled by synapses per compartment
+                self.comp_weight = np.zeros(cell.totnsegs)
                 for idx, w_idx in enumerate(w):
                     di = d.copy()
                     di['weight'] = w_idx * rho_YX_out[idx]
+                    self.comp_weight[idx] = di['weight']
                     # di['weight'] = di['weight'] * rho_YX_out[idx]
                     syn = Synapse(cell, idx=idx, **di)
                     syn.set_spike_times(np.array([t_X]))
@@ -551,6 +572,7 @@ class KernelApprox(object):
         H_YX = dict()
         for probe in probes:
             probe.cell = cell
+
             if probe.__class__.__name__ in ['PointSourcePotential',
                                             'LineSourcePotential']:
                 warn('results are non-deterministic for ' +
@@ -570,7 +592,6 @@ class KernelApprox(object):
                     probe.x = probe.x + d[0]
                     probe.y = probe.y + d[1]
                     probe.z = probe.z + d[2]
-
                     if M is None:
                         M = probe.get_transformation_matrix()
                     else:
