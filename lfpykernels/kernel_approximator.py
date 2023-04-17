@@ -374,7 +374,7 @@ class KernelApprox(object):
         t_X: float
             time of presynaptic event (ms)
         tau: float
-            half-duration of filter kernel -- full duration is (2 * tau + dt)
+            half-duration of filter kernel -- full duration is (2 * tau + dt) (if fir=False)
         g_eff: bool
             if True (default), account for contributions by synaptic
             conductances to the effective membrane time constant from
