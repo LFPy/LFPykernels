@@ -698,8 +698,6 @@ class GaussCylinderPotential(lfpykit.LinearModel):
         M = np.empty((self.z.size, self.cell.totnsegs))
         for j, z_e in enumerate(self.z):
             for i in range(self.cell.totnsegs):
-                # TODO: Change to np.convolve, and check that it gives same result? Why is not that used?
-                # TODO: Then add posibility for non-gaussian soma-depth distributions?
                 M[j, i], _ = si.quad(self._func, -np.inf, np.inf,
                                      args=(z_e, self.cell.z[i].mean()),
                                      limit=1000)
