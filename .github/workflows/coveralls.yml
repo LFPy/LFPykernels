@@ -41,7 +41,7 @@ jobs:
         pip install .
     - name: Test with pytest and coveralls
       env:
-        COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         py.test -v --cov=lfpykernels/tests/
-        coveralls
+        coveralls --service=github
