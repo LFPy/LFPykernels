@@ -592,6 +592,7 @@ class KernelApprox(object):
                     probe.x = probe.x + d[0]
                     probe.y = probe.y + d[1]
                     probe.z = probe.z + d[2]
+                    
                     if M is None:
                         M = probe.get_transformation_matrix()
                     else:
@@ -611,9 +612,6 @@ class KernelApprox(object):
                 data[h, ] = np.convolve(d, h_delta, 'same')
 
             # subtract kernel offsets at tau == 0:
-            #print(cell.tvec, t_X)
-            #print(np.any(cell.tvec == t_X))
-            #print(np.min(np.abs(cell.tvec - t_X)))
             t_idx_ = np.argmin(np.abs(cell.tvec - t_X))
             data = data - data[:, t_idx_, None]
 
