@@ -100,8 +100,8 @@ class KernelApprox(object):
     nu_X: dict of floats
         presynaptic population rates (1/s)
     conductance_based: bool
-        whether the original network model has conductance-based synapses. If not, we do not
-        need to convert to current-bases synapses
+        whether the original network model has conductance-based synapses.
+        If not, we do not need to convert to current-bases synapses
     '''
 
     def __init__(
@@ -374,7 +374,8 @@ class KernelApprox(object):
         t_X: float
             time of presynaptic event (ms)
         tau: float
-            half-duration of filter kernel -- full duration is (2 * tau + dt) (if fir=False)
+            half-duration of filter kernel -- full duration
+            is (2 * tau + dt) if fir=False
         g_eff: bool
             if True (default), account for contributions by synaptic
             conductances to the effective membrane time constant from
@@ -393,7 +394,8 @@ class KernelApprox(object):
         '''
 
         if (not self.conductance_based) and g_eff:
-            print("g_eff is True but conductance_based is False. This probably makes no sense...?")
+            print("g_eff is True but conductance_based is False." +
+                  "This probably makes no sense...?")
 
         # get conduction delay transfer function for connections from X to Y
         h_delta = self.get_delay(X, dt, tau)
@@ -493,10 +495,12 @@ class KernelApprox(object):
             for h, funarg in enumerate(syn_pos['funargs']):
                 # NOTE: ignoring shifting synapse placements by the mean
                 # somatic depth, which may be implemented as:
-                #syn_pos['funargs'][h]['loc'] = \
+                # syn_pos['funargs'][h]['loc'] = \
                 #    funarg['loc'] + self.populationParameters['loc']
-                # TODO: Any reason why we can't just implement this as a standard
-                # TODO: convolution, to get rid of the requirement that both soma and
+                # TODO: Any reason why we can't just implement 
+                #  this as a standard
+                # TODO: convolution, to get rid of the 
+                #  requirement that both soma and
                 # TODO: synapse positions should be gaussian?
                 syn_pos['funargs'][h]['scale'] = \
                     np.sqrt(funarg['scale']**2 +
