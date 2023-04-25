@@ -498,9 +498,9 @@ class KernelApprox(object):
                 # syn_pos['funargs'][h]['loc'] = \
                 #    funarg['loc'] + self.populationParameters['loc']
                 # TODO: Any reason why we can't just implement 
-                #  this as a standard
+                # this as a standard
                 # TODO: convolution, to get rid of the 
-                #  requirement that both soma and
+                # requirement that both soma and
                 # TODO: synapse positions should be gaussian?
                 syn_pos['funargs'][h]['scale'] = \
                     np.sqrt(funarg['scale']**2 +
