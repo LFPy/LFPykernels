@@ -432,7 +432,7 @@ class KernelApprox(object):
         # Create Cell object representative of whole population
         cell = TemplateCell(**cellParameters)
 
-        self.cell = cell
+        self.cell = cell  # saving cell for debugging and plotting
         # set cell rotation
         cell.set_rotation(**self.rotationParameters)
         # TODO: I COULD FIND NOWHERE THE CELL IS MOVED TO ITS LOCATION??
@@ -552,6 +552,7 @@ class KernelApprox(object):
                 # create current synapses activated by spike time of
                 # presynaptic population X
                 # setting weight scaled by synapses per compartment
+                # saving comp_weight for debugging purposes
                 self.comp_weight = np.zeros(cell.totnsegs)
                 for idx, w_idx in enumerate(w):
                     di = d.copy()
@@ -592,7 +593,7 @@ class KernelApprox(object):
                     probe.x = probe.x + d[0]
                     probe.y = probe.y + d[1]
                     probe.z = probe.z + d[2]
-                    
+
                     if M is None:
                         M = probe.get_transformation_matrix()
                     else:
