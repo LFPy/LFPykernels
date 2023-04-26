@@ -100,7 +100,7 @@ class KernelApprox(object):
     nu_X: dict of floats
         presynaptic population rates (1/s)
     conductance_based: bool
-        ``True`` (default) if the original network model has conductance-based 
+        ``True`` (default) if the original network model has conductance-based
         synapses, ``False`` if it uses current-based synapses
     '''
 
@@ -375,7 +375,7 @@ class KernelApprox(object):
             time of presynaptic event (ms)
         tau: float
             half-duration of filter kernel -- full duration
-            is (2 * tau + dt) if fir=False
+            is ``(2 * tau + dt)`` if ``fir==False``
         g_eff: bool
             if True (default), account for contributions by synaptic
             conductances to the effective membrane time constant from
