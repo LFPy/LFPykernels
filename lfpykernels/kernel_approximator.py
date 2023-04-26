@@ -100,8 +100,8 @@ class KernelApprox(object):
     nu_X: dict of floats
         presynaptic population rates (1/s)
     conductance_based: bool
-        whether the original network model has conductance-based synapses.
-        If not, we do not need to convert to current-bases synapses
+        ``True`` (default) if the original network model has conductance-based 
+        synapses, ``False`` if it uses current-based synapses
     '''
 
     def __init__(
