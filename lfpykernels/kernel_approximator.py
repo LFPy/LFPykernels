@@ -393,9 +393,9 @@ class KernelApprox(object):
             shape (n_channels, 2 * tau // dt + 1) linear response kernel
         '''
 
-        if (not self.conductance_based) and g_eff:
-            print("g_eff is True but conductance_based is False." +
-                  "This probably makes no sense...?")
+        mssg = "g_eff is True but conductance_based is False." + \
+               "This probably makes no sense...?"
+        assert not (g_eff and (not self.conductance_based)), mssg
 
         # get conduction delay transfer function for connections from X to Y
         h_delta = self.get_delay(X, dt, tau)
