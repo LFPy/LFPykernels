@@ -426,6 +426,9 @@ class KernelApprox(object):
         # set cell rotation
         cell.set_rotation(**self.rotationParameters)
 
+        # set cell position
+        cell.set_pos(z=self.populationParameters['loc'])
+
         # need lists of segment references for each cell in order to shift
         # g_pas per segment
         cell.allseglist = neuron.h.List()
