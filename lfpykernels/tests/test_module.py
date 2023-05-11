@@ -93,19 +93,20 @@ def check_kernelApprox(dt, tau, Vrest, params):
     cdm = lfpykernels.KernelApproxCurrentDipoleMoment(cell=None)
 
     H_EE = kernel.get_kernel(probes=(gauss, cdm), Vrest=Vrest, X='E',
-                            dt=dt, tau=tau, t_X=200, g_eff=True)
+                             dt=dt, tau=tau, t_X=200, g_eff=True)
 
     assert (H_EE['GaussCylinderPotential'].shape
             == (z.size, int(2 * tau // dt) + 1))
     assert np.all(H_EE['GaussCylinderPotential'][:, :int(tau // dt) + 1]
-                == 0)
+                  == 0)
     assert (H_EE['KernelApproxCurrentDipoleMoment'].shape
             == (3, int(2 * tau // dt) + 1))
     assert np.all(
         H_EE['KernelApproxCurrentDipoleMoment'][:, :int(tau // dt) + 1]
         == 0)
-    
+
     return H_EE
+
 
 class TestSuite(unittest.TestCase):
     """
@@ -218,7 +219,6 @@ class TestSuite(unittest.TestCase):
 
         _ = check_kernelApprox(dt, tau, Vrest, params)
 
-
     def test_KernelApprox_01(self):
         '''test that the basic methods of the KernelApprox class works
         with offset cell positions along z-axis'''
@@ -291,13 +291,13 @@ class TestSuite(unittest.TestCase):
                                     tau1=0.2, tau2=1.8, e=0.)],
             synapsePositionArguments=[
                 dict(section=['soma', 'apic'],
-                    fun=[st.norm, st.norm],
-                    funargs=[dict(loc=0. + populationParameters['loc'],
-                                  scale=100.),
-                            dict(loc=750. + populationParameters['loc'],
-                                 scale=100.)
-                            ],
-                    funweights=[0.5, 1.])],
+                     fun=[st.norm, st.norm],
+                     funargs=[dict(loc=0. + populationParameters['loc'],
+                                   scale=100.),
+                              dict(loc=750. + populationParameters['loc'],
+                                   scale=100.)
+                              ],
+                     funweights=[0.5, 1.])],
             extSynapseParameters=dict(syntype='Exp2Syn', weight=0.0005,
                                       tau1=0.2, tau2=1.8, e=0.0),
             nu_ext=40.,
@@ -308,5 +308,5 @@ class TestSuite(unittest.TestCase):
         H_EE_offset = check_kernelApprox(dt, tau, Vrest, params)
 
         # check that results translated by 200µm vertically match
-        np.testing.assert_allclose(H_EE['GaussCylinderPotential'][:-2, ], 
+        np.testing.assert_allclose(H_EE['GaussCylinderPotential'][:-2, ],
                                    H_EE_offset['GaussCylinderPotential'][2:, ])
