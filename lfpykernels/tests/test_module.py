@@ -45,6 +45,69 @@ def get_cell(n_seg=4):
     return cell
 
 
+def set_passive(cell, Vrest):
+    """Insert passive leak channel across all sections
+
+    Parameters
+    ----------
+    cell: object
+        LFPy.NetworkCell like object
+    Vrest: float
+        Steady state potential
+    """
+    for sec in cell.template.all:
+        sec.insert('pas')
+        sec.g_pas = 0.0003  # (S/cm2)
+        sec.e_pas = Vrest  # (mV)
+
+
+def check_kernelApprox(dt, tau, Vrest, params):
+    # instantiate object
+    kernel = lfpykernels.KernelApprox(
+        **params
+    )
+
+    # check delay distribution
+    delay = kernel.get_delay('E', dt=dt, tau=tau)
+    assert delay.shape == (int(tau // dt) * 2 + 1, )
+    assert delay.min() == 0
+    assert np.all(delay[:int(tau // dt) + 1] == 0)
+    np.testing.assert_almost_equal(delay.sum(), 1)
+
+    # check get_rand_idx_area_and_distribution_prob method with
+    # a uniform distribution
+    cell = LFPy.TemplateCell(**params['cellParameters'])
+    p = kernel.get_rand_idx_area_and_distribution_prob(
+        cell,
+        section='allsec',
+        fun=st.uniform,
+        funargs=dict(loc=-1E3, scale=2E3))
+    np.testing.assert_allclose(p, cell.area / cell.area.sum())
+
+    # check kernel predictions using two different forward models
+    z = np.linspace(-500, 500, 11)
+    gauss = lfpykernels.GaussCylinderPotential(
+        cell=None, z=z, sigma=0.3, R=100, sigma_z=100
+    )
+
+    cdm = lfpykernels.KernelApproxCurrentDipoleMoment(cell=None)
+
+    H_EE = kernel.get_kernel(probes=(gauss, cdm), Vrest=Vrest, X='E',
+                             dt=dt, tau=tau, t_X=200, g_eff=True)
+
+    assert (H_EE['GaussCylinderPotential'].shape
+            == (z.size, int(2 * tau // dt) + 1))
+    assert np.all(H_EE['GaussCylinderPotential'][:, :int(tau // dt) + 1]
+                  == 0)
+    assert (H_EE['KernelApproxCurrentDipoleMoment'].shape
+            == (3, int(2 * tau // dt) + 1))
+    assert np.all(
+        H_EE['KernelApproxCurrentDipoleMoment'][:, :int(tau // dt) + 1]
+        == 0)
+
+    return H_EE
+
+
 class TestSuite(unittest.TestCase):
     """
     test methods and modules
@@ -107,22 +170,6 @@ class TestSuite(unittest.TestCase):
 
     def test_KernelApprox_00(self):
         '''test that the basic methods of the KernelApprox class works'''
-
-        def set_passive(cell, Vrest):
-            """Insert passive leak channel across all sections
-
-            Parameters
-            ----------
-            cell: object
-                LFPy.NetworkCell like object
-            Vrest: float
-                Steady state potential
-            """
-            for sec in cell.template.all:
-                sec.insert('pas')
-                sec.g_pas = 0.0003  # (S/cm2)
-                sec.e_pas = Vrest  # (mV)
-
         # parameters
         Vrest = -65.
         dt = 2**-4
@@ -170,45 +217,96 @@ class TestSuite(unittest.TestCase):
             nu_X=dict(E=1.)
         )
 
-        # instantiate object
-        kernel = lfpykernels.KernelApprox(
-            **params
+        _ = check_kernelApprox(dt, tau, Vrest, params)
+
+    def test_KernelApprox_01(self):
+        '''test that the basic methods of the KernelApprox class works
+        with offset cell positions along z-axis'''
+        # parameters
+        Vrest = -65.
+        dt = 2**-4
+        tau = 100.
+
+        cellParameters = dict(
+            templatefile=os.path.join(lfpykernels.__path__[0], 'tests',
+                                      'BallAndSticksTemplate.hoc'),
+            templatename='BallAndSticksTemplate',
+            custom_fun=[set_passive],
+            custom_fun_args=[{'Vrest': Vrest}],
+            templateargs=None,
+            delete_sections=False,
+            morphology=os.path.join(lfpykernels.__path__[0], 'tests',
+                                    'BallAndSticks_E.hoc')
         )
 
-        # check delay distribution
-        delay = kernel.get_delay('E', dt=dt, tau=tau)
-        assert delay.shape == (int(tau // dt) * 2 + 1, )
-        assert delay.min() == 0
-        assert np.all(delay[:int(tau // dt) + 1] == 0)
-        np.testing.assert_almost_equal(delay.sum(), 1)
+        populationParameters = dict(radius=100, loc=0, scale=50)
 
-        # check get_rand_idx_area_and_distribution_prob method with
-        # a uniform distribution
-        cell = LFPy.TemplateCell(**cellParameters)
-        p = kernel.get_rand_idx_area_and_distribution_prob(
-            cell,
-            section='allsec',
-            fun=st.uniform,
-            funargs=dict(loc=-1E3, scale=2E3))
-        np.testing.assert_allclose(p, cell.area / cell.area.sum())
-
-        # check kernel predictions using two different forward models
-        z = np.linspace(-500, 500, 11)
-        gauss = lfpykernels.GaussCylinderPotential(
-            cell=None, z=z, sigma=0.3, R=100, sigma_z=100
+        params = dict(
+            X=['E'],
+            Y='E',
+            N_X=np.array([1024]),
+            N_Y=1024,
+            C_YX=np.array([0.1]),
+            cellParameters=cellParameters,
+            populationParameters=populationParameters,
+            rotationParameters=dict(x=0., y=0.),
+            multapseFunction=st.truncnorm,
+            multapseParameters=[dict(a=-0.2, b=1.6, loc=2, scale=5)],
+            delayFunction=st.truncnorm,
+            delayParameters=[dict(a=-4.0, b=np.inf, loc=1.5, scale=0.3)],
+            synapseParameters=[dict(weight=0.001, syntype='Exp2Syn',
+                                    tau1=0.2, tau2=1.8, e=0.)],
+            synapsePositionArguments=[dict(section=['soma', 'apic'],
+                                           fun=[st.norm, st.norm],
+                                           funargs=[dict(loc=0., scale=100.),
+                                                    dict(loc=750., scale=100.)
+                                                    ],
+                                           funweights=[0.5, 1.])],
+            extSynapseParameters=dict(syntype='Exp2Syn', weight=0.0005,
+                                      tau1=0.2, tau2=1.8, e=0.0),
+            nu_ext=40.,
+            n_ext=128.,
+            nu_X=dict(E=1.)
         )
 
-        cdm = lfpykernels.KernelApproxCurrentDipoleMoment(cell=None)
+        H_EE = check_kernelApprox(dt, tau, Vrest, params)
 
-        H_EE = kernel.get_kernel(probes=(gauss, cdm), Vrest=Vrest, X='E',
-                                 dt=dt, tau=tau, t_X=200, g_eff=True)
+        # offset by 200µm along z-axis
+        populationParameters = dict(radius=100, loc=200, scale=50)
 
-        assert (H_EE['GaussCylinderPotential'].shape
-                == (z.size, int(2 * tau // dt) + 1))
-        assert np.all(H_EE['GaussCylinderPotential'][:, :int(tau // dt) + 1]
-                      == 0)
-        assert (H_EE['KernelApproxCurrentDipoleMoment'].shape
-                == (3, int(2 * tau // dt) + 1))
-        assert np.all(
-            H_EE['KernelApproxCurrentDipoleMoment'][:, :int(tau // dt) + 1]
-            == 0)
+        params = dict(
+            X=['E'],
+            Y='E',
+            N_X=np.array([1024]),
+            N_Y=1024,
+            C_YX=np.array([0.1]),
+            cellParameters=cellParameters,
+            populationParameters=populationParameters,
+            rotationParameters=dict(x=0., y=0.),
+            multapseFunction=st.truncnorm,
+            multapseParameters=[dict(a=-0.2, b=1.6, loc=2, scale=5)],
+            delayFunction=st.truncnorm,
+            delayParameters=[dict(a=-4.0, b=np.inf, loc=1.5, scale=0.3)],
+            synapseParameters=[dict(weight=0.001, syntype='Exp2Syn',
+                                    tau1=0.2, tau2=1.8, e=0.)],
+            synapsePositionArguments=[
+                dict(section=['soma', 'apic'],
+                     fun=[st.norm, st.norm],
+                     funargs=[dict(loc=0. + populationParameters['loc'],
+                                   scale=100.),
+                              dict(loc=750. + populationParameters['loc'],
+                                   scale=100.)
+                              ],
+                     funweights=[0.5, 1.])],
+            extSynapseParameters=dict(syntype='Exp2Syn', weight=0.0005,
+                                      tau1=0.2, tau2=1.8, e=0.0),
+            nu_ext=40.,
+            n_ext=128.,
+            nu_X=dict(E=1.)
+        )
+
+        H_EE_offset = check_kernelApprox(dt, tau, Vrest, params)
+
+        # check that results translated by 200µm vertically match
+        np.testing.assert_allclose(H_EE['GaussCylinderPotential'][:-2, ],
+                                   H_EE_offset['GaussCylinderPotential'][2:, ])
