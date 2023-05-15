@@ -182,7 +182,7 @@ class TestSuite(unittest.TestCase):
             custom_fun=[set_passive],
             custom_fun_args=[{'Vrest': Vrest}],
             templateargs=None,
-            delete_sections=False,
+            delete_sections=True,
             morphology=os.path.join(lfpykernels.__path__[0], 'tests',
                                     'BallAndSticks_E.hoc')
         )
@@ -234,7 +234,7 @@ class TestSuite(unittest.TestCase):
             custom_fun=[set_passive],
             custom_fun_args=[{'Vrest': Vrest}],
             templateargs=None,
-            delete_sections=False,
+            delete_sections=True,
             morphology=os.path.join(lfpykernels.__path__[0], 'tests',
                                     'BallAndSticks_E.hoc')
         )

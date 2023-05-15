@@ -47,7 +47,7 @@ def integrate_beta(tau_1, tau_2):
 
 
 class KernelApprox(object):
-    '''Class for computing linear spike-to-signal filter kernels resulting
+    """Class for computing linear spike-to-signal filter kernels resulting
     from presynaptic spiking activity and resulting postsynaptic currents
 
     Parameters
@@ -102,7 +102,7 @@ class KernelApprox(object):
     conductance_based: bool
         ``True`` (default) if the original network model has conductance-based
         synapses, ``False`` if it uses current-based synapses
-    '''
+    """
 
     def __init__(
             self,
@@ -155,7 +155,7 @@ class KernelApprox(object):
         self.conductance_based = conductance_based
 
     def get_delay(self, X, dt, tau):
-        '''Get normalized transfer function for conduction delay distribution
+        """Get normalized transfer function for conduction delay distribution
         for connections between population X and Y
 
         Parameters
@@ -172,7 +172,7 @@ class KernelApprox(object):
         h_delta: ndarray
             shape (2 * tau // dt + 1) array with transfer function for delay
             distribution
-        '''
+        """
         t = np.linspace(-tau, tau, int(2 * tau // dt + 1))
         [i] = np.where(np.array(self.X) == X)[0]
         h_delay = self.delayFunction(**self.delayParameters[i]).pdf(t)
@@ -352,7 +352,7 @@ class KernelApprox(object):
     def get_kernel(self, probes, Vrest=-65, dt=2**-4,
                    X='E', t_X=200, tau=50,
                    g_eff=True, fir=False):
-        '''Compute linear spike-to-signal filter kernel mapping presynaptic
+        """Compute linear spike-to-signal filter kernel mapping presynaptic
         population firing rates/spike trains to signal measurement, e.g., LFP.
 
         Parameters
@@ -391,7 +391,7 @@ class KernelApprox(object):
         -------
         H_YX: dict of ndarray
             shape (n_channels, 2 * tau // dt + 1) linear response kernel
-        '''
+        """
 
         mssg = "g_eff is True but conductance_based is False." + \
                "This probably makes no sense...?"
@@ -437,9 +437,6 @@ class KernelApprox(object):
         self.cell = cell  # saving cell for debugging and plotting
         # set cell rotation
         cell.set_rotation(**self.rotationParameters)
-        # TODO: I COULD FIND NOWHERE THE CELL IS MOVED TO ITS LOCATION??
-        # TODO: CHECK IF THIS MAKES SENSE!!
-        cell.set_pos(z=self.populationParameters['loc'])
 
         # set cell position
         cell.set_pos(z=self.populationParameters['loc'])
@@ -500,11 +497,7 @@ class KernelApprox(object):
                 # somatic depth, which may be implemented as:
                 # syn_pos['funargs'][h]['loc'] = \
                 #    funarg['loc'] + self.populationParameters['loc']
-                # TODO: Any reason why we can't just implement
-                # this as a standard
-                # TODO: convolution, to get rid of the
-                # requirement that both soma and
-                # TODO: synapse positions should be gaussian?
+
                 syn_pos['funargs'][h]['scale'] = \
                     np.sqrt(funarg['scale']**2 +
                             self.populationParameters['scale']**2)
@@ -685,7 +678,7 @@ class GaussCylinderPotential(lfpykit.LinearModel):
         return self._f(z_e - z, z_i) * self._g(z)
 
     def get_transformation_matrix(self):
-        '''
+        """
         Get linear response matrix
 
         Returns
@@ -697,7 +690,7 @@ class GaussCylinderPotential(lfpykit.LinearModel):
         ------
         AttributeError
             if ``cell is None``
-        '''
+        """
         if self.cell is None:
             raise AttributeError(
                 '{}.cell is None'.format(self.__class__.__name__))
@@ -714,7 +707,7 @@ class GaussCylinderPotential(lfpykit.LinearModel):
 
 class KernelApproxCurrentDipoleMoment(lfpykit.CurrentDipoleMoment):
     """Modified ``lfpykit.CurrentDipoleMoment`` like class that ignores
-    contributions to the current dipole moment in the the x- and y-directions
+    contributions to the current dipole moment in the x- and y-directions
     due to rotational symmetry around the z-axis.
 
     Parameters
