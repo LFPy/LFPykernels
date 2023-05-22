@@ -47,7 +47,7 @@ def integrate_beta(tau_1, tau_2):
 
 
 class KernelApprox(object):
-    '''Class for computing linear spike-to-signal filter kernels resulting
+    """Class for computing linear spike-to-signal filter kernels resulting
     from presynaptic spiking activity and resulting postsynaptic currents
 
     Parameters
@@ -61,7 +61,7 @@ class KernelApprox(object):
     N_Y: int
         postsynaptic population size
     C_YX: array of float
-        pairwise connection probabilities betwen populations X and Y
+        pairwise connection probabilities between populations X and Y
     multapseFunction: callable
         ``scipy.stats.rv_discrete`` or ``scipy.stats.rv_continuous`` like
         function for determining mean number of synapse
@@ -99,7 +99,10 @@ class KernelApprox(object):
         number of extrinsic synapses
     nu_X: dict of floats
         presynaptic population rates (1/s)
-    '''
+    conductance_based: bool
+        ``True`` (default) if the original network model has conductance-based
+        synapses, ``False`` if it uses current-based synapses
+    """
 
     def __init__(
             self,
@@ -127,7 +130,8 @@ class KernelApprox(object):
                                       tau1=0.2, tau2=1.8, e=0.0),
             nu_ext=40.,
             n_ext=128.,
-            nu_X=dict(E=1.)
+            nu_X=dict(E=1.),
+            conductance_based=True
     ):
         # set attributes
         self.X = X
@@ -148,9 +152,10 @@ class KernelApprox(object):
         self.nu_ext = nu_ext
         self.n_ext = n_ext
         self.nu_X = nu_X
+        self.conductance_based = conductance_based
 
     def get_delay(self, X, dt, tau):
-        '''Get normalized transfer function for conduction delay distribution
+        """Get normalized transfer function for conduction delay distribution
         for connections between population X and Y
 
         Parameters
@@ -167,7 +172,7 @@ class KernelApprox(object):
         h_delta: ndarray
             shape (2 * tau // dt + 1) array with transfer function for delay
             distribution
-        '''
+        """
         t = np.linspace(-tau, tau, int(2 * tau // dt + 1))
         [i] = np.where(np.array(self.X) == X)[0]
         h_delay = self.delayFunction(**self.delayParameters[i]).pdf(t)
@@ -347,7 +352,7 @@ class KernelApprox(object):
     def get_kernel(self, probes, Vrest=-65, dt=2**-4,
                    X='E', t_X=200, tau=50,
                    g_eff=True, fir=False):
-        '''Compute linear spike-to-signal filter kernel mapping presynaptic
+        """Compute linear spike-to-signal filter kernel mapping presynaptic
         population firing rates/spike trains to signal measurement, e.g., LFP.
 
         Parameters
@@ -355,7 +360,7 @@ class KernelApprox(object):
         probes: list of objects
             list of ``LFPykit.models`` like instances
             (should be instantiated with cell=None).
-        Vrest: float of list of float
+        Vrest: float or list of float
             Mean/Expectation value of postsynaptic membrane voltage used
             for linearization of synapse conductances.
             If list of length equal to the number of compartments, the
@@ -369,7 +374,8 @@ class KernelApprox(object):
         t_X: float
             time of presynaptic event (ms)
         tau: float
-            half-duration of filter kernel -- full duration is (2 * tau + dt)
+            half-duration of filter kernel -- full duration
+            is ``(2 * tau + dt)`` if ``fir==False``
         g_eff: bool
             if True (default), account for contributions by synaptic
             conductances to the effective membrane time constant from
@@ -385,7 +391,12 @@ class KernelApprox(object):
         -------
         H_YX: dict of ndarray
             shape (n_channels, 2 * tau // dt + 1) linear response kernel
-        '''
+        """
+
+        mssg = "g_eff is True but conductance_based is False." + \
+               "This probably makes no sense...?"
+        assert not (g_eff and (not self.conductance_based)), mssg
+
         # get conduction delay transfer function for connections from X to Y
         h_delta = self.get_delay(X, dt, tau)
 
@@ -414,15 +425,16 @@ class KernelApprox(object):
         # class NetworkCell parameters:
         cellParameters = deepcopy(self.cellParameters)
         cellParameters.update(dict(
-            dt=dt,
-            tstop=t_X + tau,
-            delete_sections=True
-        )
+                dt=dt,
+                tstop=t_X + tau,
+                delete_sections=True
+            )
         )
 
         # Create Cell object representative of whole population
         cell = TemplateCell(**cellParameters)
 
+        self.cell = cell  # saving cell for debugging and plotting
         # set cell rotation
         cell.set_rotation(**self.rotationParameters)
 
@@ -484,11 +496,11 @@ class KernelApprox(object):
                 # NOTE: ignoring shifting synapse placements by the mean
                 # somatic depth, which may be implemented as:
                 # syn_pos['funargs'][h]['loc'] = \
-                #     funarg['loc'] + self.populationParameters['loc']
+                #    funarg['loc'] + self.populationParameters['loc']
+
                 syn_pos['funargs'][h]['scale'] = \
                     np.sqrt(funarg['scale']**2 +
                             self.populationParameters['scale']**2)
-
             # per-compartment connection probability
             p = self.get_rand_idx_area_and_distribution_prob(
                 cell,
@@ -525,20 +537,27 @@ class KernelApprox(object):
                 # modify synapse parameters to account for current-based
                 # synapses linearized around Vrest
                 d = self.synapseParameters[iii].copy()
-                if isinstance(Vrest, (int, float)):
-                    w = [- d['weight'] * (Vrest - d['e'])] * cell.totnsegs
-                    # d['weight'] = - d['weight'] * (Vrest - d['e'])
+
+                if self.conductance_based:
+                    if isinstance(Vrest, (int, float)):
+                        w = [- d['weight'] * (Vrest - d['e'])] * cell.totnsegs
+                        # d['weight'] = - d['weight'] * (Vrest - d['e'])
+                    else:
+                        w = [- d['weight'] * (Vr - d['e']) for Vr in Vrest]
+                    del d['e']  # no longer needed
+                    d['syntype'] = d['syntype'] + 'I'
                 else:
-                    w = [- d['weight'] * (Vr - d['e']) for Vr in Vrest]
-                del d['e']  # no longer needed
-                d['syntype'] = d['syntype'] + 'I'
+                    w = [d['weight']] * cell.totnsegs
 
                 # create current synapses activated by spike time of
                 # presynaptic population X
                 # setting weight scaled by synapses per compartment
+                # saving comp_weight for debugging purposes
+                self.comp_weight = np.zeros(cell.totnsegs)
                 for idx, w_idx in enumerate(w):
                     di = d.copy()
                     di['weight'] = w_idx * rho_YX_out[idx]
+                    self.comp_weight[idx] = di['weight']
                     # di['weight'] = di['weight'] * rho_YX_out[idx]
                     syn = Synapse(cell, idx=idx, **di)
                     syn.set_spike_times(np.array([t_X]))
@@ -554,6 +573,7 @@ class KernelApprox(object):
         H_YX = dict()
         for probe in probes:
             probe.cell = cell
+
             if probe.__class__.__name__ in ['PointSourcePotential',
                                             'LineSourcePotential']:
                 warn('results are non-deterministic for ' +
@@ -593,7 +613,8 @@ class KernelApprox(object):
                 data[h, ] = np.convolve(d, h_delta, 'same')
 
             # subtract kernel offsets at tau == 0:
-            data = data - data[:, cell.tvec == t_X]
+            t_idx_ = np.argmin(np.abs(cell.tvec - t_X))
+            data = data - data[:, t_idx_, None]
 
             # force negative time lags to be zero
             data[:, cell.tvec < t_X] = 0
@@ -657,7 +678,7 @@ class GaussCylinderPotential(lfpykit.LinearModel):
         return self._f(z_e - z, z_i) * self._g(z)
 
     def get_transformation_matrix(self):
-        '''
+        """
         Get linear response matrix
 
         Returns
@@ -669,7 +690,7 @@ class GaussCylinderPotential(lfpykit.LinearModel):
         ------
         AttributeError
             if ``cell is None``
-        '''
+        """
         if self.cell is None:
             raise AttributeError(
                 '{}.cell is None'.format(self.__class__.__name__))
@@ -686,7 +707,7 @@ class GaussCylinderPotential(lfpykit.LinearModel):
 
 class KernelApproxCurrentDipoleMoment(lfpykit.CurrentDipoleMoment):
     """Modified ``lfpykit.CurrentDipoleMoment`` like class that ignores
-    contributions to the current dipole moment in the the x- and y-directions
+    contributions to the current dipole moment in the x- and y-directions
     due to rotational symmetry around the z-axis.
 
     Parameters
